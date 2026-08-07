@@ -177,6 +177,24 @@ irrelevant material, tighten the brief instead.
 
 ## Delegation protocol
 
+**Agent tiers.** Every delegated agent is one of three kinds:
+
+- **Ephemeral** — one task, dies after its report. The default.
+- **Warm** — an idle agent reused for the same role and overlapping scope,
+  under the staleness rules below.
+- **Standing service** — a session that owns an **area** (not a task) for the
+  whole run and beyond: e.g., the integrator that owns commits/merges to main
+  for one repository, a docs keeper that owns consolidation passes, one
+  service session per repository in multi-repo work. Standing services take
+  narrow procedural tasks serially via messages; their accumulated context
+  (repo conventions, history, prior verdicts) is an asset, so they are exempt
+  from the 2–3-task retirement. Recycle one only when its reports degrade
+  (missed constraints, stale assumptions).
+
+**Route by ownership before launching.** Before creating any agent, check the
+registry: if a standing service owns the task's area, send the task to it as
+a message. A fresh launch is the fallback, not the default.
+
 **Warm agents before cold launches.** A background sub-agent that finished its
 turn stays idle with its full conversation context intact and can be woken
 with a follow-up message. That context — explored files, build behavior,
@@ -196,7 +214,7 @@ Reuse has staleness limits:
   silently.
 - Retire an agent after roughly 2–3 substantial tasks: accumulated context
   starts to distract more than it helps. Fresh launch beats a bloated
-  veteran.
+  veteran. Standing services are exempt (see Agent tiers above).
 - Reuse never crosses role boundaries (don't turn an idle researcher into a
   writer) and never crosses repositories.
 

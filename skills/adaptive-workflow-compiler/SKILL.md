@@ -140,6 +140,7 @@ execution_policy:
   max_concurrent_writers: 1         # >1 requires isolation: worktree + disjoint scopes
   isolation: shared-tree            # shared-tree | worktree
   parallel_scopes: []               # when writers >1: one disjoint file-scope entry per writer
+  standing_services: [integrator]   # area-owning sessions for this run; integrator is the minimum
   inline_artifacts_allowed: false   # true only for the LOW compressed chain
 artifacts:
   - id:
@@ -308,7 +309,10 @@ expert paths. Record the coverage rationale in the manifest.
 9. Assign each stage to one accountable role, and record the
    `execution_policy`: writer is `autonomous-delivery-lead`, coordinator may
    not edit production code, `max_concurrent_writers`/`isolation`/
-   `parallel_scopes` follow the manifest's own field comments. Single-writer
+   `parallel_scopes` follow the manifest's own field comments.
+   `standing_services` declares the area-owning sessions for the run
+   (minimum: the integrator that owns commits to main; add a docs keeper
+   when the run includes consolidation passes). Single-writer
    concurrency, worktree isolation, and integration/cleanup are governed in
    full by `model-aware-orchestration` §Delegation mechanics and §Session
    hygiene — this step only records the resulting fields, it does not

@@ -603,9 +603,11 @@ disjoint work with clear ownership.
 ### AgentRegistry (warm-agent reuse)
 
 Maintain an `AgentRegistry` in session state (a small table or artifact):
-`role | agent_id | scope | model | last_commit_seen | tasks_done | status`.
-Update it at every launch, completion, and retirement. Before delegation,
-consult the registry and apply `model-aware-orchestration` §Delegation
+`role | agent_id | kind | area | scope | model | last_commit_seen | tasks_done | status`.
+`kind` is `ephemeral | warm | standing` per `model-aware-orchestration`
+§Agent tiers. Update it at every launch, completion, and retirement. Before
+delegation, consult the registry: route first to a standing service that owns
+the task's area, then apply `model-aware-orchestration` §Delegation
 protocol's warm-agent reuse and staleness rules in full — an idle agent with
 the same role and overlapping scope gets a follow-up message, not a cold
 relaunch. Role revisions in the same pass ("send revisions back to the
@@ -621,7 +623,10 @@ agents (one short final message each, only where the agent plausibly holds
 something unreported), fold them into `OBSERVE AND PRIORITIZE NEXT`, then
 consider every agent retired and the registry closed. Never carry a previous
 run's idle agents into a new loop pass — the new pass starts from the
-registry's recorded outcomes, not from stale conversations.
+registry's recorded outcomes, not from stale conversations. Exception:
+**standing services** (integrator, docs keeper) are paused, not dismissed —
+record their `agent_id`, area, and `last_commit_seen` in the registry so the
+next run can resume them with a delta brief instead of a cold start.
 
 Keep product -> design -> technical preparation sequential for their decision
 artifacts. One bounded exception: once the `StorySet`/`SelectedStory` is
