@@ -1,6 +1,6 @@
 ---
 name: controlled-language-authoring
-description: Use whenever writing or editing skill files, agent kickoff prompts, agent-facing documentation, or other instructions that LLM agents must follow reliably.
+description: Use whenever writing or editing skill files, agent kickoff prompts, agent-facing documentation, or similar structured agent-facing instructions. Do not trigger for routine chat replies.
 ---
 
 # Controlled-Language Authoring
@@ -8,7 +8,9 @@ description: Use whenever writing or editing skill files, agent kickoff prompts,
 Write agent-facing text so models of different capability can parse the task,
 constraints, and expected result with minimal ambiguity and token waste. This
 skill is inspired by controlled-language principles, but it is not a copy of
-ASD-STE100 and does not require its fixed vocabulary.
+ASD-STE100 and does not require its fixed vocabulary. See
+model-aware-orchestration §Message protocol for the canonical constraint-ID
+and verdict mechanics.
 
 ## Writing rules
 
@@ -29,7 +31,8 @@ ASD-STE100 and does not require its fixed vocabulary.
    carry special meaning. Bad: "Use the normal gate." Good: "Use the StrategyReadinessVerdict gate."
 
 6. **W6 — Keep sentences short.** Target no more than 20 words for instructions
-   and 25 words for descriptions. Bad: "After you inspect the files, which may reveal several possible paths, select the one that best..." Good: "Inspect the files. Select one path."
+   and 25 words for descriptions, adapted from published ASD-STE100 sentence-length
+   limits. Bad: "After you inspect the files, which may reveal several possible paths, select the one that best..." Good: "Inspect the files. Select one path."
 
 7. **W7 — Replace abstract nouns with concrete verbs.** State the observable
    operation. Bad: "Perform an evaluation of the diff." Good: "Review the diff."
@@ -58,6 +61,9 @@ ASD-STE100 and does not require its fixed vocabulary.
 15. **W15 — Make references resolvable.** Name a file, section, identifier, or
     exact command. Bad: "Follow the project rules." Good: "Read `AGENTS.md` before editing."
 
+16. **W16 — Avoid negative constructions.** State the positive condition instead
+    of a double negative. Bad: "Do not skip validation unless not required." Good: "Run validation. Skip it only when the repo marks it not-applicable."
+
 ## When NOT to compress
 
 Precision beats brevity when a shorter sentence would hide scope, ordering,
@@ -65,6 +71,15 @@ exceptions, safety boundaries, ownership, failure behavior, or acceptance
 criteria. Keep a longer sentence only when splitting it would lose that
 relationship. Prefer a short definition, table, or numbered sequence instead
 of dense prose.
+
+## Worked example
+
+Before: "It would probably be a good idea for the agent to go ahead and take a
+look at the config files, and if it happens to notice anything that seems like
+it might not be quite right, it should think about maybe flagging it, unless
+of course that seems unnecessary." After: "Inspect the config files. If a
+value looks wrong, flag it. Do not flag values that match the documented
+defaults."
 
 ## Self-check
 
@@ -76,3 +91,4 @@ of dense prose.
 - Are conditions, failure outcomes, verdicts, and constraint IDs explicit?
 - Are list items parallel and noun clusters easy to parse?
 - Did I preserve precision instead of compressing an important exception?
+- Did I state positive conditions instead of negative or double-negative constructions?
