@@ -1,9 +1,9 @@
 # Workflow Recipes
 
-Recipes are stage patterns, not rigid pipelines. Compose and trim them according
-to the task, effort classification, repository evidence, and risk.
+Recipes are stage patterns, not rigid pipelines. Compose and trim them by task,
+effort classification, repository evidence, and risk.
 
-At MEDIUM/LOW effort, substitute the merged artifacts defined in
+At MEDIUM/LOW, substitute the merged artifacts in
 `references/artifact-contracts.md`: `FlowDelta` replaces
 `CurrentJourney`/`TargetJourney`/`UserFlow`, `InteractionContract` replaces
 `StateMatrix`/`InteractionSpecification`, `TraceabilityMatrix`/`SliceGraph`
@@ -63,7 +63,7 @@ Redesign invariants:
 
 - State what remains unchanged.
 - Do not equate redesign with restyling.
-- Compare current and target journeys.
+- Compare current/target journeys.
 - Cover navigation, hierarchy, interaction, copy, accessibility, and all states.
 - Prefer incremental migration unless evidence supports replacement.
 
@@ -123,7 +123,7 @@ Restoration request
 -> Historical parity and regression QA
 ```
 
-Restore parity before redesigning. If the prior behavior cannot be recovered
+Restore parity before redesigning. If prior behavior cannot be recovered
 from history or evidence, label the reconstruction inferred rather than
 inventing a new placement or interaction silently.
 
@@ -202,7 +202,7 @@ Representative scenario
 ```
 
 Do not select a micro-optimization only because a pattern looks expensive.
-Require a meaningful path and an evidence plan.
+Require a meaningful path and evidence plan.
 
 ## Accessibility
 

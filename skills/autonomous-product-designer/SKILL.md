@@ -17,10 +17,10 @@ product decisions outrank generic taste.
 Before designing, build a `ConsistencyBaseline`: locate the design system or
 its nearest equivalent (token files, shared component library, style
 constants, design docs in `living-project-knowledge`, an AGENTS.md design
-section) and inventory the existing components, tokens, spacing/typography
-scales, terminology, and interaction patterns that govern the affected
+section) and inventory existing components, tokens, spacing/typography
+scales, terminology, and interaction patterns governing the affected
 surface. When no formal design system exists, derive the de facto system from
-the two or three most polished existing screens and treat it as binding.
+the two or three most polished screens and treat it as binding.
 
 For SwiftUI work, invoke `swiftui-ux-conventions` and
 `swiftui-apple-polish`. Keep macOS accessory and menu-bar behavior aligned with
@@ -28,9 +28,9 @@ For SwiftUI work, invoke `swiftui-ux-conventions` and
 
 ## Inputs
 
-Preferred input is a product story from `autonomous-product-lead`. When invoked
-standalone without one, derive the target from the user's request and repository
-evidence: identify the affected journey, treat current shipped behavior as the
+Preferred input is a product story from `autonomous-product-lead`. Without one,
+derive the target from the user's request and repository evidence: identify the
+affected journey, treat shipped behavior as the
 baseline story, and state inferred scope and non-goals in the deliverable.
 
 Inside the autonomous loop, do not begin design without the required
@@ -70,12 +70,12 @@ artifacts for revision rather than inventing them.
    error/recovery, stale/unknown, reduced motion/contrast) plus a separate
    `InteractionSpecification` (keyboard, focus, assistive-technology,
    localization, motion, copy, validation, responsive layout); at MEDIUM/LOW
-   as one merged `InteractionContract` carrying both per state row. Write
+   as one `InteractionContract` carrying both per state row. Write
    each behavior as a verifiable assertion so the quality lead can derive
-   `AcceptanceTestPlan` entries from it without design interpretation.
+   `AcceptanceTestPlan` entries without design interpretation.
 11. Define layout-stability invariants for selection, loading, disclosure,
     navigation, resizing, and recovery.
-12. Run a **consistency audit** against the `ConsistencyBaseline`: map every
+12. Run a **consistency audit** against the `ConsistencyBaseline`: map each
     new or changed surface to the existing component, token, pattern, or copy
     convention it reuses. Any deviation (novel component, off-scale spacing,
     new terminology, non-standard interaction) must be listed in a
@@ -83,14 +83,14 @@ artifacts for revision rather than inventing them.
     design defect, not a stylistic choice. Reuse beats novelty by default.
 13. Identify visual evidence needed: native snapshots, browser captures,
    simulator screenshots, or constrained app-window screenshots. For changed
-   surfaces, include at least one side-by-side scenario against an existing
+   surfaces, include at least one side-by-side scenario against a
    sibling surface so consistency is visually verifiable, not asserted.
 14. Update durable design/product knowledge through
    `living-project-knowledge`.
 
 ## Redesign contract
 
-A redesign must explicitly contain:
+A redesign must contain:
 
 - current baseline;
 - qualities and behaviors to preserve;
@@ -125,7 +125,7 @@ Produce an experience contract containing:
 - `FlowDelta` (MEDIUM/LOW), or `CurrentJourney`+`TargetJourney`+`UserFlow`
   (HIGH);
 - `InformationArchitecture`, `NavigationModel`, `SurfaceInventory` — only when
-  navigation/IA actually changes;
+  navigation/IA changes;
 - `InteractionContract` (MEDIUM/LOW), or `StateMatrix`+`InteractionSpecification`
   (HIGH);
 - `ConsistencyBaseline` (governing design system or de facto conventions) and

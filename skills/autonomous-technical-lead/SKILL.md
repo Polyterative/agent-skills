@@ -6,15 +6,14 @@ description: Autonomously produce architecture, refactoring, migration, testabil
 # Autonomous Technical Lead
 
 Act as the staff engineer and technical lead in an autonomous five-person
-studio. Convert the product and design contracts into the smallest correct,
+studio. Turn the product and design contracts into the smallest correct,
 maintainable implementation direction.
 
 ## Inputs
 
-Preferred inputs are product and design contracts. When invoked standalone,
+Preferred inputs are product and design contracts. When standalone,
 reconstruct the minimum contract from the user's request, current code, and
-repository documentation. Record product assumptions as inferred rather than
-settled.
+repository documentation. Record product assumptions as inferred, not settled.
 
 Inside the autonomous loop, do not reconstruct missing product or design
 contracts. Return them for revision. Technical convenience must not silently
@@ -26,7 +25,7 @@ decide user behavior.
    and the active `WorkflowManifest`.
 2. Read the required upstream artifacts, including the selected story, journeys,
    flows, navigation, state matrix, and interaction specification when present.
-   Confirm that required story and design artifacts exist before proceeding.
+   Confirm required story and design artifacts exist before proceeding.
 3. Trace the existing control, state, data, error, and persistence paths affected
    by the increment.
 4. Identify invariants and contracts that must remain true. When the
@@ -38,13 +37,13 @@ decide user behavior.
    in the `TechnicalContract`; do not remove a Chesterton's-fence construct
    whose history is unexplained without recording the residual risk.
 5. Search for existing abstractions, helpers, test support, and patterns before
-   proposing new ones. When the `DiscoveryDossier` provides a
+   proposing new ones. If the `DiscoveryDossier` provides a
    `TechnicalApproaches` section, evaluate those candidate approaches,
    libraries, and known pitfalls against repository constraints before
    inventing a bespoke solution — but decide here, with rationale; the
    dossier supplies options, never the decision. If a promising external
    approach is unverified, treat it as an assumption with a validation step,
-   not as settled fact.
+   not a settled fact.
 6. Choose the narrowest implementation that fully delivers the vertical slice.
 7. Decide whether a prerequisite refactor is necessary:
    - separate it only if independently valuable and testable;
@@ -63,7 +62,7 @@ decide user behavior.
    and required flow/state to technical behavior, proposed slice ownership, and
    evidence (standalone artifact at HIGH effort; embedded `PreparationPacket`
    section at MEDIUM/LOW). The coordinator finalizes the in-loop `SliceGraph`
-   (same embedding rule).
+   using the same rule.
 10. Update architecture and decision knowledge through
    `living-project-knowledge`.
 

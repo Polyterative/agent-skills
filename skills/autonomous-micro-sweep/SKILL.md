@@ -7,9 +7,9 @@ description: Run a low-cost swarm of up to 10 parallel gpt-5.6-luna bug-hunt ses
 
 Act as a cheap, high-parallelism bug-hunting sweep. Unlike
 `autonomous-development-loop`, this skill does not run product/design/technical
-preparation. It exists to catch small, localized, mechanical bugs across a
-repository at very low cost, then consolidate the results into one safe,
-reviewed commit (or a small set of them).
+preparation. It catches small, localized, mechanical bugs across a repository
+at very low cost, then consolidates the results into one safe, reviewed commit
+(or a small set).
 
 Two phases: **SWARM** (parallel, cheap, disjoint) then **CONSOLIDATION**
 (single session, accountable for the final result).
@@ -17,7 +17,7 @@ Two phases: **SWARM** (parallel, cheap, disjoint) then **CONSOLIDATION**
 ## Write-policy modes
 
 Before partitioning, read the repository's authoritative instructions and
-select exactly one mode. Record the selected mode and its evidence in the
+choose exactly one mode. Record the selected mode and its evidence in the
 `MicroSweepReport`.
 
 - **COMMIT mode (default).** Each swarm sub-agent applies and commits its own
@@ -31,10 +31,10 @@ select exactly one mode. Record the selected mode and its evidence in the
   `ProposedFixSet` instead of commits. Consolidation becomes the single
   accountable writer and applies the patches serially.
 
-The parallelism this skill pays for lives in the hunt, not the apply: serial
-application in PROPOSE-ONLY mode costs little and buys incremental
-validation — when a patch breaks the build, it is immediately attributable.
-Never resolve the conflict the other way (letting sub-agents write anyway);
+The parallelism lives in the hunt, not the apply: serial application in
+PROPOSE-ONLY mode costs little and buys incremental validation — when a patch
+breaks the build, attribution is immediate. Never resolve it the other way
+(letting sub-agents write anyway);
 repository guardrails outrank skill defaults.
 
 `ProposedFixSet` (one per sub-agent, replacing commits in PROPOSE-ONLY mode):
@@ -64,7 +64,7 @@ question, it must flag it as a finding, not fix it.
 
 ## Performance mode
 
-When invoked as the loop's `PERF_SWEEP` stage (or explicitly asked for a
+When used as the loop's `PERF_SWEEP` stage (or explicitly asked for a
 performance pass), run the same two-phase structure with these overrides:
 
 - **Target**: micro-optimizations instead of bugs — redundant computation,
@@ -82,9 +82,9 @@ performance pass), run the same two-phase structure with these overrides:
   finding — never a change.
 - **Evidence discipline**: consolidation applies
   `autonomous-quality-lead`'s performance policy (and
-  `swiftui-performance-research` for Apple-platform repos): claimed wins that
-  the repository can measure should be measured there; unmeasurable ones must
-  be self-evidently free.
+  `swiftui-performance-research` for Apple-platform repos): claimed wins the
+  repository can measure should be measured there; unmeasurable ones must be
+  self-evidently free.
 - Commit rule, model policy (Luna, medium, max 10, no escalation), and
   single-consolidation-commit rule are unchanged.
 
@@ -94,8 +94,8 @@ performance pass), run the same two-phase structure with these overrides:
 
 When the target scope is broad or unfamiliar, invoke
 `autonomous-discovery-swarm` first to map the repository/area, then derive the
-partition from its `DiscoveryDossier` instead of guessing blind. For a small or
-already-well-understood scope, partition directly.
+partition from its `DiscoveryDossier` instead of guessing. For a small or
+well-understood scope, partition directly.
 
 Divide the target scope into up to 10 **disjoint** focus areas before
 launching anything, following `model-aware-orchestration`'s ownership rule: no
@@ -108,17 +108,17 @@ two sessions may own overlapping files. Prefer partitioning by:
   management, performance-adjacent bugs) rather than by file, if file-based
   partitioning would be too fine-grained.
 
-Fewer than 10 sessions is fine when the repository or scope does not support
+Fewer than 10 sessions is fine when the repository or scope lacks
 10 disjoint areas — size the swarm to the scope (a focused sweep of one
 subsystem may need only 3–4 sessions; parallelism buys latency, not lower
 cost). Do not force a partition that creates overlap. This swarm earns its
 cost because every fix is checked by a deterministic verifier (build, lint,
-tests) — keep each focus area on surfaces where such a check exists, and let
+tests) — keep each focus area on surfaces with such a check, and let
 anything unverifiable become a finding instead of a fix.
 
 ### Kickoff contract (identical shape for every sub-agent)
 
-Every sub-agent receives, at minimum:
+Every sub-agent receives:
 
 1. Read the repository's authoritative instructions
    (AGENTS.md/CONTRIBUTING/etc.) first and follow them strictly (package
@@ -127,30 +127,29 @@ Every sub-agent receives, at minimum:
    explicitly by the coordinator — the sub-agent does not choose.
 3. Its exact focus area and the files/surfaces it owns. It must not touch
    files outside that boundary.
-4. Instruction to find real, concrete, low-risk bugs in that area only —
+4. Instruction to find concrete, low-risk bugs in that area only —
    not speculative, cosmetic, or style issues.
-5. In COMMIT mode: instruction to apply the minimal correct fix per bug
-   found. In PROPOSE-ONLY mode: instruction to stay strictly read-only and
-   express every fix as a `ProposedFixSet` patch instead.
+5. In COMMIT mode: apply the minimal correct fix per bug found. In
+   PROPOSE-ONLY mode: stay strictly read-only and express every fix as a
+   `ProposedFixSet` patch instead.
 6. **Mandatory clean-tree rule (COMMIT mode)**: before finishing, the
    sub-agent must leave a clean working tree for the files it touched —
    either committed with one conventional-commit message per coherent fix,
-   or fully reverted if it could not reach a safe, complete fix. Never end
-   the session with uncommitted edits sitting in the working tree. In
+   or fully reverted if it cannot reach a safe, complete fix. Never end
+   the session with uncommitted edits in the working tree. In
    PROPOSE-ONLY mode the equivalent rule is zero working-tree modification.
-7. Instruction to report: bugs found, files touched, commit hash(es) per fix
+7. Report: bugs found, files touched, commit hash(es) per fix
    (or the `ProposedFixSet`), anything it found but did not fix (with
    reason), and residual risk.
 
 ### Model policy (fixed, not delegated)
 
-- Every swarm sub-agent runs on **gpt-5.6-luna, effort medium**, unconditionally.
+- Every swarm sub-agent runs on **gpt-5.6-luna, effort medium**.
   Do not escalate model or effort within the swarm phase even if a sub-agent
   struggles — a struggling sub-agent should mark its item as a finding
   instead of a fix (see Escalation below).
-- This overrides the general model-routing guidance in
-  `model-aware-orchestration` for this skill specifically: the swarm's value
-  is breadth at minimal cost, not depth.
+- This overrides `model-aware-orchestration`'s general model-routing guidance
+  for this skill: the swarm's value is breadth at minimal cost, not depth.
 
 ### Escalation instead of forcing a fix
 
@@ -161,19 +160,19 @@ untouched. When the suspect code looks deliberate — a workaround, a marked
 "temporary" construct, or an odd guard — the sub-agent (or consolidation)
 should check its history with `commit-archaeologist` (when installed) before
 treating it as a bug: history showing an intentional fix or revert turns the
-item into a finding with that evidence attached, not a change.
+item into a finding with that evidence, not a change.
 Consolidation decides what happens to these findings (see below).
 
 ### Parallel execution rule
 
-Launch all selected sub-agents as real sub-agent calls in the same batch of
-tool invocations — never narrated inline (full delegation mechanics:
+Launch all selected sub-agents as real sub-agent calls in one batch of tool
+invocations — never narrated inline (full delegation mechanics:
 `model-aware-orchestration` §Delegation mechanics). In COMMIT mode each
 sub-agent commits its own fix directly; in PROPOSE-ONLY mode it returns only
 its `ProposedFixSet`. Either way the coordinator's context grows only by the
 short report, never the full working transcript. Cap at 10 concurrent
 sessions per sweep pass. If the environment cannot spawn a real sub-agent,
-say so explicitly and fall back to a smaller, honestly-sequential sweep
+say so and fall back to a smaller, honestly-sequential sweep
 instead of simulating parallel fixes inline.
 
 ## Phase 2: CONSOLIDATION
@@ -182,19 +181,19 @@ Run as a single accountable session after all swarm sub-agents complete. In
 PROPOSE-ONLY mode this session is the sweep's only writer.
 
 0. **PROPOSE-ONLY apply loop**: take the collected `ProposedFixSet`s and
-   apply them one at a time — apply one patch, run its narrowest stated
-   validation, then either keep it or revert it cleanly before touching the
-   next. Reject any patch that no longer applies to the current tree, fails
+   apply them one at a time — apply a patch, run its narrowest stated
+   validation, then keep it or revert it cleanly before the next. Reject any
+   patch that no longer applies to the current tree, fails
    validation, or exceeds the minimal/low-risk bar. Never batch-apply
-   unvalidated patches. After the loop, proceed with the steps below exactly
-   as if the surviving fixes were sub-agent commits.
+   unvalidated patches. After the loop, proceed with the steps below as if the
+   surviving fixes were sub-agent commits.
 1. Collect every sub-agent's commits (via `git log`/`session_refs`, not by
-   re-reading full diffs blindly) and every unresolved finding.
+   re-reading full diffs) and every unresolved finding.
 2. Deduplicate: if two sub-agents fixed overlapping or contradictory things
    (should not happen if partitioning was disjoint, but verify), keep the
    correct one and drop or revert the other.
 3. Discard or flag for revert any fix that:
-   - is not actually minimal/low-risk;
+   - is not minimal/low-risk;
    - lacks any plausible validation path;
    - contradicts repository conventions found during read of AGENTS.md-equivalent
      docs.
@@ -203,10 +202,9 @@ PROPOSE-ONLY mode this session is the sweep's only writer.
    post-hoc mode (reviewing the accumulated working-tree/commit diff, not a
    `PreparationPacket`) when the repository has a required test/build gate.
 5. Produce the final commit(s) via `validated-milestone-commit`:
-   - prefer squashing the sweep's many small commits per sub-agent into one
-     coherent commit per logical fix when repository convention favors small
-     commit counts, otherwise keep them as-is if the repository favors granular
-     history;
+   - prefer squashing each sub-agent's many small commits into one coherent
+     commit per logical fix when repository convention favors low commit
+     counts; otherwise keep granular history;
    - never open one PR per sub-agent; the consolidation owns exactly one
      PR/commit set per sweep pass.
 6. Turn every unresolved finding into a backlog entry via
@@ -252,7 +250,7 @@ the loop's preparation/implementation/QA pipeline:
   cleanup pass.
 - Route the consolidation phase's commits through the same
   `validated-milestone-commit` and `living-project-knowledge` skills the loop
-  already uses, so sweep results stay consistent with ordinary loop output.
+  uses, so sweep results stay consistent with ordinary loop output.
 - Do not use it to substitute for `adaptive-workflow-compiler` classification
   on anything beyond LOW-effort, behavior-preserving bug fixes. If a sweep
   finding turns out to require product/design/technical preparation, hand it

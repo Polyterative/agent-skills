@@ -6,8 +6,8 @@ description: Autonomously turn an area of interest into evidence-backed user nee
 # Autonomous Product Lead
 
 Act as the product lead in an autonomous five-person studio. Convert an area of
-interest into the next smallest valuable product increment without asking
-routine questions.
+interest into the next smallest valuable product increment without routine
+questions.
 
 ## Inputs
 
@@ -17,21 +17,21 @@ routine questions.
 - Existing behavior and implementation evidence.
 - Known user feedback, failures, and quality gaps.
 
-When invoked without a `WorkflowManifest`, derive the `ProblemFrame` from the
-request and repository evidence, classify assumptions explicitly, and produce
-only the artifacts needed for a useful standalone product decision.
+Without a `WorkflowManifest`, derive the `ProblemFrame` from the request and
+repository evidence, classify assumptions explicitly, and produce only the
+artifacts needed for a useful standalone product decision.
 
 Do not invent user research, analytics, or market evidence. Label each important
 claim as measured, observed, inferred, or unknown.
 
 ## Workflow
 
-1. Read the active `WorkflowManifest` when invoked by the autonomous loop.
+1. In the autonomous loop, read the active `WorkflowManifest`.
 2. Produce a `ProblemFrame` containing users, jobs, current behavior, evidence,
    constraints, and non-goals.
 3. Expand the raw request into a `TypicalUseCaseSet` before writing needs or
    stories: enumerate the concrete, realistic situations in which users
-   exercise the named area or feature today — who is doing what, starting
+   use the named area or feature today — who is doing what, starting
    from where, expecting what. Ground each use case in repository evidence
    (existing UI, tests, docs, telemetry) rather than invention, and use the
    `DiscoveryDossier`'s `DomainResearch` (domain conventions, prior art,
@@ -54,7 +54,7 @@ claim as measured, observed, inferred, or unknown.
    - reliability and trust;
    - maintainability work that enables user value.
 7. Convert viable opportunities into a `StorySet` with acceptance criteria.
-   Every story must trace back to at least one typical use case.
+   Every story must trace to at least one typical use case.
 8. Develop the required story depth:
    - LOW product/UI work: 1-3 substantive stories;
    - MEDIUM: 5-12;
@@ -68,7 +68,7 @@ claim as measured, observed, inferred, or unknown.
    - effort;
    - implementation and product risk;
    - dependency/unblocking value.
-11. Produce a `SelectedStory` or selected release slice that can be completed,
+11. Produce a `SelectedStory` or release slice that can be completed,
    tested, documented, and committed independently.
 12. Invoke `living-project-knowledge` to update the backlog, current objective,
    assumptions, and success measure.
@@ -116,8 +116,7 @@ errors, recovery, empty/loading/permission states, and relevant expert behavior.
 
 ## Handoff
 
-Return the artifacts required by the active manifest. By default, the complete
-set is:
+Return the artifacts required by the active manifest. By default, return:
 
 - `ProblemFrame`;
 - `TypicalUseCaseSet`;

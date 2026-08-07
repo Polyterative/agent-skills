@@ -5,7 +5,7 @@ description: Coordinate multi-step or multi-repo work while minimizing new workt
 
 # Lean Orchestrate
 
-A coordination skill tuned for an operator who works on each repo's shared
+A coordination skill for an operator who works on each repo's shared
 long-lived branch and does NOT want a pile of worktree folders to manage. Invert
 the usual "one session = one branch = one PR" default: **inline-first,
 shared-branch-first, reuse-first.** This applies to every project — never assume
@@ -14,7 +14,7 @@ a specific branch name; detect the repo's real one.
 ## Prime directive
 
 Do the work in the CURRENT session on the CURRENT branch unless there is a
-concrete, present need for parallelism. Every new session is a new worktree
+concrete need for parallelism. Every new session is a new worktree
 folder the user has to manage — treat spawning one as a cost, not the default.
 
 ## Decision order (stop at the first that fits)
@@ -30,7 +30,7 @@ folder the user has to manage — treat spawning one as a cost, not the default.
    repo, on its real branch** (see branch rules). This is the only routine
    reason to create a session.
 4. **Genuine parallel fan-out the user explicitly asked for → spawn independent
-   sessions.** Only when tasks truly run at the same time AND the user wants
+   sessions.** Only when tasks truly run in parallel AND the user wants
    that. Otherwise prefer sequential inline work.
 5. **Explore an alternative without disturbing current work → fork_session.**
    Only on explicit request; call out that it creates another worktree.
@@ -42,17 +42,17 @@ worktrees.
 
 - **Default to the repo's real working branch — detected, not assumed.** For any
   session you must create, set `base_branch` to that repo's canonical branch so
-  work lands where the user actually commits. Determine it per repo, in this
+  work lands where the user commits. Determine it per repo, in this
   order:
   1. an open session for that repo already on a real branch → match it;
-  2. the branch the user is currently on / referenced;
+  2. the branch the user is on / referenced;
   3. the repo's default branch from `list_projects` or its git config
      (`develop`, `main`, `master`, `trunk`, etc. — whatever that repo uses).
 - **Never leave a session on an auto-generated branch** (e.g. `stunning-enigma`,
   `psychic-sniffle`) when the intent is to work on the repo's real branch.
 - **Only create a NEW branch when the user explicitly asks.** If they do, ask for
   the name (or propose a conventional one and confirm) — never accept a random
-  generated name silently.
+  generated name.
 - **State each session's repo + branch in your plan** before spawning, e.g.
   "session in <repo> on <branch>", so the user is never surprised by where work
   lands.
@@ -72,7 +72,7 @@ worktrees.
 
 - When you DO delegate to sessions, create them coordinated
   (`coordinate_with_creator: true`, `notify_on_idle: "once"`) so results return
-  without you polling.
+  without polling.
 - **Hand off, end your turn, wait for the idle notification.** Never block on
   sleep/watch loops.
 - On completion, pull each session's result together and give ONE consolidated

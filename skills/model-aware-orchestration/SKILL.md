@@ -11,10 +11,10 @@ workstreams, or a task that might be split across repositories or branches.
 ## Primary rule
 
 Optimize for a correct, integrated result with the fewest unnecessary context
-resets. Do not waste tokens merely because they are available, but spend them
+resets. Do not waste tokens because they are available, but spend them
 when additional reasoning materially improves first-pass correctness or reduces
 expensive rework. Balance latency, token use, coordination, duplicate
-investigation, and lost context. Do not create a new session merely to continue
+investigation, and lost context. Do not create a new session to continue
 a coherent feature, debugging thread, or implementation already in progress.
 
 Before delegating, decide whether the task truly benefits from a separate
@@ -32,14 +32,14 @@ context:
 ## Delegation mechanics (mandatory)
 
 "Invoke role X" or "invoke skill Y" never means narrating that role inline in
-the coordinator's own turn. It means literally spawning a bounded sub-agent
-with its own fresh context window, using the actual delegation primitive the
+the coordinator's own turn. It means spawning a bounded sub-agent
+with its own fresh context window, using the delegation primitive the
 environment provides (a sub-agent/task call, or a child project session for
 cross-repo or PR-sized work), and receiving back only a compact deliverable.
 
 Apply this test before writing any role work directly into the current
-context: **if a stage is supposed to start from a clean context, it must run
-in a process that actually has a clean context.** Reading a skill file and then
+context: **if a stage must start from a clean context, it must run
+in a process with a clean context.** Reading a skill file and then
 acting as that role in the same turn does not reset context, does not bound
 token growth, and defeats the entire purpose of a swarm or a role boundary.
 
@@ -50,9 +50,9 @@ Concretely:
   may run inline in the coordinator's context.
 - Every stage the compiled workflow marks as a separate role, and every swarm
   member in `autonomous-discovery-swarm` or `autonomous-micro-sweep`, must run
-  as an actual sub-agent invocation:
+  as a sub-agent invocation:
   - a sub-agent call for in-repo, same-session-scope work (background mode for
-    anything the coordinator can review after the fact; sync mode only for
+    anything the coordinator can review later; sync mode only for
     something small enough to block on);
   - a genuine child project session for cross-repo work, a separate PR-sized
     change, or work the user should be able to inspect independently.
@@ -79,7 +79,7 @@ re-read and re-reason over the sub-agent's full transcript token-for-token.
 
 Select the model according to the required quality, acceptable latency, and
 dominant kind of reasoning. Do not use one model by habit, and do not increase
-model capability merely because tokens are free.
+model capability because tokens are free.
 
 ### Operating profiles
 
@@ -106,8 +106,8 @@ model capability merely because tokens are free.
   implementation.
 - Use xhigh for prolonged autonomy, adversarial review, or difficult work with
   important unresolved constraints.
-- Use max only when failure or rework is more expensive than the additional
-  latency and tokens. Do not use max for routine execution.
+- Use max only when failure or rework costs more than the added latency and
+  tokens. Do not use max for routine execution.
 - Prefer a stronger prompt, explicit acceptance criteria, and targeted context
   before increasing effort.
 - Keep the same capable model through a coherent task. Do not repeatedly switch
@@ -115,8 +115,8 @@ model capability merely because tokens are free.
 - If speed is the binding constraint, choose a faster serving mode rather than
   lowering reasoning until the task becomes unreliable.
 
-Model selection is a hypothesis, not a status signal. If an agent is making
-unproductive assumptions, missing constraints, or repeatedly failing validation,
+Model selection is a hypothesis, not a status signal. If an agent makes
+unproductive assumptions, misses constraints, or repeatedly fails validation,
 change the prompt, context, or model deliberately. Do not retry the same vague
 task with several models.
 
@@ -181,8 +181,8 @@ irrelevant material, tighten the brief instead.
 turn stays idle with its full conversation context intact and can be woken
 with a follow-up message. That context — explored files, build behavior,
 constraints already understood — is paid-for capital; relaunching a fresh
-agent for the same role and scope re-pays it. Before launching any sub-agent,
-check for an existing idle agent with the same role and an overlapping scope
+agent for the same role and scope pays again. Before launching any sub-agent,
+check for an idle agent with the same role and overlapping scope
 and send it a follow-up instead. Typical wins: the delivery lead across
 consecutive slices of one scope, the quality lead across a QA pass and its
 repair loop, swarm researchers re-queried to deepen a specific finding.
@@ -236,7 +236,7 @@ upstream contract or research first, then give downstream agents the confirmed
 interface and branch.
 
 A repository single-writer policy ("only one agent may modify files at a
-time") constrains the **concurrency** of writers, never **who** the writer is.
+time") constrains writer **concurrency**, never **who** writes.
 Satisfy it by keeping at most one writing sub-agent active while everything
 else stays read-only — not by pulling implementation into the coordinator.
 "Since only one agent may write, I'll do it myself" is a delegation failure,
@@ -256,12 +256,12 @@ integrator: rebase or ff-merge one branch onto main, validate, then take the
 next. Before integrating, check the branch diff against its declared scope;
 out-of-scope diffs integrate last or are rejected.
 
-**No orphaned worktrees.** Delegated work performed in a worktree is not
+**No orphaned worktrees.** Delegated work in a worktree is not
 finished when the sub-session commits — it is finished when the commit is on
 the main branch and the worktree and temporary branch are gone. The
-coordinator owns this: track every worktree it (or a child session) creates,
+coordinator owns this: track every worktree it or a child session creates,
 integrate each one before closing the task, and verify with
-`git worktree list` / `git branch` that nothing is left behind. Never report
+`git worktree list` / `git branch` that nothing remains. Never report
 a task complete, or end a session, with work stranded in an unintegrated
 worktree. Worktree removal is always performed by the integrator from the
 main checkout (`git -C <main> worktree remove ...`), never by an agent

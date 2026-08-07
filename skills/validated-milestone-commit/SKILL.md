@@ -7,7 +7,7 @@ description: Commit each completed major development chunk after required tests,
 
 Commit a completed autonomous-development chunk only after its required gate
 passes. This skill is proactive inside `autonomous-development-loop`; it does not
-require the human to ask separately for each commit.
+require separate human requests for each commit.
 
 ## Preconditions
 
@@ -31,14 +31,14 @@ this file owns their mechanics.
    permit a commit in the current context (branch, worktree, and push policy).
 
 Procedure note (judgment calls, not gates — apply before staging, not as a
-pass/fail check): confirm the chunk is coherent enough that one honest
-conventional-commit subject describes all of it, and that no temporary
+pass/fail check): confirm the chunk is coherent enough for one honest
+conventional-commit subject to describe it, and that no temporary
 debugging, generated junk, or unrelated edit rides along — K1's ScopeMap
-match is the objective backstop for this, but a human-legible single subject
+match is the objective backstop, but a human-legible single subject
 line is still worth a sanity read.
 
 If a required check fails, return work to the owning role. Never commit a
-known-failing milestone merely to save progress.
+known-failing milestone to save progress.
 
 ## Workflow
 
@@ -70,17 +70,17 @@ known-failing milestone merely to save progress.
     commit stranded on a worktree branch does not count as a milestone.
 12. Produce a `MilestoneRecord` containing the outcome, completed artifacts,
     quality verdict, commit subject and identifier, and deferred work.
-13. Invoke `living-project-knowledge` to record the completed milestone when the
+13. Invoke `living-project-knowledge` to record the completed milestone if the
     repository keeps a completion ledger; if that update creates a meaningful
-    follow-up docs-only change, commit it only when repository conventions favor
+    follow-up docs-only change, commit it only if repository conventions favor
     a separate ledger commit. Create at most one follow-up docs-only commit per
-    milestone, and never record that docs commit itself as a new ledger entry.
+    milestone, and never record that docs commit as a new ledger entry.
 
 ## Boundaries
 
-- Never amend unless explicitly required by repository workflow or requested by
+- Never amend unless required by repository workflow or requested by
   the human.
-- Never push unless the active repository policy or current request explicitly
+- Never push unless the active repository policy or current request
   authorizes it.
 - Never create or switch branches merely to commit.
 - Never discard unrelated user changes.

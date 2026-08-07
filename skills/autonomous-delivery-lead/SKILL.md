@@ -14,7 +14,7 @@ and integration of one selected vertical slice.
    `AcceptanceTestPlan`, and the `StrategyReadinessVerdict`.
 2. Inside the autonomous loop, stop before editing unless the verdict is READY.
    The packet and verdict must exist as session-state artifact files; a verdict
-   asserted only in conversation does not satisfy this check. Do not construct
+   in conversation alone does not satisfy this check. Do not construct
    a substitute brief or infer missing product/design behavior.
 3. Inspect the working tree and verify/refresh the compiler's `ScopeMap`,
    classifying every existing changed file/hunk as current slice, explicitly
@@ -23,28 +23,27 @@ and integration of one selected vertical slice.
    child sessions and branches.
 5. Invoke `model-aware-orchestration` before delegating.
 6. Default to `lean-orchestrate`: reuse the current branch/session and create no
-   extra worktree unless independent parallelism is both useful and allowed.
+   extra worktree unless independent parallelism is useful and allowed.
 7. Establish the targeted validation command and documentation surfaces.
 8. During standalone invocation only, if no implementation brief exists,
-   construct a minimal one from the request
-   and repository evidence: objective, scope, non-goals, acceptance criteria,
+   build a minimal one from the request and repository evidence: objective,
+   scope, non-goals, acceptance criteria,
    and required validation, plus a compact `AcceptanceTestPlan` (at least one
    named test per acceptance criterion, or the regression test for a bug fix).
-   Record it through `living-project-knowledge` before
-   editing code.
+   Record it through `living-project-knowledge` before editing.
 9. Read the coordinator-owned `SliceGraph`. During standalone invocation only,
-   create it when absent. Every slice must identify the artifacts and acceptance
+   create it if absent. Every slice must identify the artifacts and acceptance
    criteria it covers, dependencies, tests, visual/runtime evidence,
    documentation, rollback, and proposed commit boundary.
 
 Never allow multiple writing agents to overlap files or dependent surfaces.
 Read-only agents may investigate, run isolated review, or analyze test output.
 
-Do not absorb unrelated pre-existing work into the slice merely because it is
+Do not absorb unrelated pre-existing work into the slice because it is
 present in the working tree. Explicit user acceptance of existing work must name
 that work or clearly request merging the current tree.
 
-Before handoff, when `scope-creep-detector` is installed, run it against the
+Before handoff, if `scope-creep-detector` is installed, run it on the
 slice diff with the slice objective as intent. Every `likely_creep` path must
 either map to a named `ScopeMap` entry (keep, with the connection stated) or
 be removed from the slice; a diff with unexplained creep paths is not ready
@@ -75,7 +74,7 @@ Work RED -> GREEN -> refactor. Tests come from the plan, not after the code.
    never specified, or a performance blocker demands a different shape — stop
    and raise a `ReworkRequest` to the coordinator naming the earliest
    invalidated stage, the evidence, and what remains valid. Do not improvise a
-   substitute design or contract inline, and do not push through knowing the
+   substitute design or contract inline or push through knowing the
    artifact is wrong.
 9. Update artifact and slice status through `living-project-knowledge` after each
    meaningful milestone.
@@ -92,7 +91,7 @@ Work RED -> GREEN -> refactor. Tests come from the plan, not after the code.
 - Keep generated files and snapshots aligned with repository conventions.
 - Do not run formatters or broad rewrites unrelated to the slice.
 - Keep logs concise but preserve exact failures.
-- If a required test cannot execute, do not substitute static review and do not
+- If a required test cannot run, do not substitute static review or
   present the slice as ready to commit. Return `test-unavailable` to quality.
 
 ## Swift and macOS adapter
@@ -142,5 +141,5 @@ Return:
 
 Never commit directly. Inside the loop, commits happen only through
 `validated-milestone-commit`, invoked by the coordinator after the quality gate
-passes. When invoked standalone, hand off to `validated-milestone-commit`
-yourself only after running the slice's required checks.
+passes. When standalone, hand off to `validated-milestone-commit` yourself only
+after running the slice's required checks.

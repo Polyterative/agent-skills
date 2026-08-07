@@ -110,7 +110,7 @@ that repository guidance forbids.
 ## Adaptive state machine
 
 The compiled workflow chooses the internal stages. The coordinator runs this
-outer state machine:
+state machine:
 
 ```text
 QUICK_TRIAGE (coordinator, one cheap judgment)
@@ -153,18 +153,16 @@ workflow only for a REPLAN verdict.
 ### QUICK_TRIAGE (before spending on the swarm)
 
 Before invoking `autonomous-discovery-swarm`, the coordinator makes one cheap
-judgment from already-available evidence: is this plausibly worth a full
+judgment from available evidence: is this plausibly worth a full
 pass, is it an expedite case, or is it likely low value? If likely low value,
 produce the backlog recommendation (per the compiler's value/cost check)
 using existing evidence only — do not spend the swarm to confirm a rejection.
-This ordering exists to avoid burning up to 10 sessions on work the compiler
-would then decline.
+This avoids burning up to 10 sessions on work the compiler would decline.
 
 ### EXPEDITE_LANE (incident fast path)
 
-Real breakage takes a fast path, mirroring incident response in a real
-organization. Entry criteria — ALL must hold, and the coordinator must record
-which ones:
+Real breakage takes a fast path, mirroring real incident response. Entry
+criteria — ALL must hold, and the coordinator must record them:
 
 - reproducible breakage of core behavior, a failing build/test on the main
   branch, an active data-loss risk, or a security exposure;
@@ -190,11 +188,11 @@ Procedural debt is repaid immediately after the fix:
 ### PARK registry (blocked work re-entry)
 
 Blocked items are parked, never abandoned: each PARK entry records the exact
-unblock condition and the owning stage. The coordinator reviews the registry
-at every OBSERVE_AND_PRIORITIZE; when an unblock condition is met, the item
+unblock condition and owning stage. The coordinator reviews the registry at
+every OBSERVE_AND_PRIORITIZE; when an unblock condition is met, the item
 re-enters at its owning stage with its retained artifacts. Parked items that
-stay blocked across a full pass are surfaced in the completion report rather
-than silently accumulating.
+stay blocked across a full pass are surfaced in the completion report instead
+of silently accumulating.
 
 ## Strategy-first rule
 
@@ -242,8 +240,8 @@ User need -> story -> journey/flow/state -> technical behavior
           -> test/evidence -> commit
 ```
 
-Persist the manifest and artifact statuses through
-session-state checkpoints. Persist only durable decisions and current truth
+Persist the manifest and artifact statuses in session-state checkpoints.
+Persist only durable decisions and current truth
 through `living-project-knowledge`.
 
 ## Stage library
@@ -302,7 +300,7 @@ purely technical behavior-preserving slice.
 ### 4. DIRECT
 
 Invoke `autonomous-technical-lead` for MEDIUM/HIGH work and LOW work with
-nontrivial architecture or risk. For an established-pattern LOW correction, the
+nontrivial architecture or risk. For established-pattern LOW correction, the
 coordinator may produce a compact `TechnicalContract`.
 
 - Map the affected architecture and data/state flow.
@@ -338,7 +336,7 @@ The brief must be independently executable without access to earlier chat.
 ### 5A. STRATEGY READINESS GATE
 
 Invoke `autonomous-quality-lead` in pre-implementation mode. It reviews the
-`PreparationPacket` rather than code and returns:
+`PreparationPacket`, not code, and returns:
 
 - **READY** - implementation can proceed without inventing missing user,
   interaction, architecture, scope, or validation decisions.
@@ -395,15 +393,15 @@ budgets. If their combined total reaches five, stop and mark the slice blocked.
 
 ### 7B. PERF_SWEEP (optional)
 
-After review converges and before QA, when the manifest selects it, invoke
+After review converges and before QA, if the manifest selects it, invoke
 `autonomous-micro-sweep` in **performance mode**, scoped strictly to the
 surfaces the slice touched (plus their direct hot paths). Select this stage
 when the slice touched rendering, loops over data, I/O, startup, or other
 plausibly hot code; omit it for trivial or non-performance-relevant slices.
 
-- The swarm hunts safe, behavior-preserving micro-optimizations only;
-  anything requiring measurement to justify or architectural change becomes a
-  finding for the backlog, not a change.
+- The swarm hunts only safe, behavior-preserving micro-optimizations;
+  anything needing measurement to justify or architectural change becomes a
+  backlog finding, not a change.
 - The sweep's consolidated diff goes through the same review classification
   as stage 7 (blocking/non-blocking, within the same combined budget cap).
 - Hand the combined result (slice + surviving optimizations) to QA as one
@@ -417,7 +415,7 @@ reload the skill.
 
 - Run the smallest relevant checks first, then the broader required suite.
 - Reconcile the `AcceptanceTestPlan`: every planned test executed and green,
-  every justified exception backed by its alternative evidence. Unreconciled
+  every justified exception backed by alternative evidence. Unreconciled
   entries block PASS.
 - Exercise unit, integration, snapshot, visual, accessibility, runtime, and
   performance gates selected for the slice.
@@ -437,9 +435,9 @@ Invoke `living-project-knowledge`.
 
 Reconcile current work, backlog, decisions, product behavior, architecture,
 quality evidence, known limitations, and follow-up opportunities. Documentation
-must describe current truth, not merely narrate the implementation.
+must describe current truth, not merely narrate implementation.
 
-Out-of-scope documentation problems go to the `DocDebt` ledger, not into this
+Out-of-scope documentation problems go to the `DocDebt` ledger, not this
 stage. When a trigger in `living-project-knowledge` §Consolidation pass fires
 (ledger ≥ 5, ~3 milestones since last consolidation, or run end), schedule the
 consolidation pass as its own `docs:` chunk.
@@ -450,14 +448,14 @@ Invoke `validated-milestone-commit`.
 
 Before invoking it, run `references/quick-reference-card.md` §BEFORE-COMMIT
 (K1-K7) — the canonical gate; `validated-milestone-commit` owns the full
-commit mechanics. Commit every completed major chunk when and only when its
-required checks pass. The documentation for that chunk belongs in the same
+commit mechanics. Commit each completed major chunk only when its required
+checks pass. That chunk's documentation belongs in the same
 commit unless repository conventions require a separate documentation commit.
 
 ### 11. OBSERVE AND PRIORITIZE NEXT
 
-- Verify the fresh runtime or deployed artifact when repository tooling supports
-  it.
+- Verify the fresh runtime or deployed artifact when supported by repository
+  tooling.
 - Capture post-change evidence and compare it with the original objective.
 - Add new facts and opportunities to project knowledge.
 - Select the next highest-value safe slice and repeat.
@@ -486,7 +484,7 @@ the full-pass counter.
 
 ### Targeted rework (mid-execution recursion)
 
-Use when execution discovers evidence that invalidates one or more upstream
+Use when execution finds evidence that invalidates one or more upstream
 artifacts, but the overall problem framing and selected story remain correct.
 Typical triggers: implementation reveals the designed flow is technically
 infeasible; a performance blocker requires a different interaction or data
@@ -501,11 +499,11 @@ Protocol:
    valid.
 2. The coordinator routes the request to that stage's **retained role
    context** — do not reload the role skill. The role updates only the
-   invalidated artifacts, marking superseded versions rather than deleting
+   invalidated artifacts, marks superseded versions rather than deleting
    them, and preserves everything the evidence did not touch.
-3. Work then re-flows forward through every downstream stage that consumes a
-   changed artifact. Reopen those stage todos (and their dependents) so the
-   sequencing rules keep holding. Unchanged artifacts are not re-derived.
+3. Work then re-flows through every downstream stage that consumes a changed
+   artifact. Reopen those stage todos (and dependents) so sequencing rules
+   keep holding. Unchanged artifacts are not re-derived.
 4. If the `PreparationPacket` changed, the strategy gate must re-verify it
    (delta review in the quality lead's retained context, not a full re-gate).
 5. Implementation already committed for this slice stays committed only if
@@ -514,7 +512,8 @@ Protocol:
 
 Budget: at most **two targeted reworks per slice**. A third rework signal
 means the slice was mis-framed: escalate to REPLAN or mark the slice blocked.
-Targeted rework does not increment the full-pass counter, but every
+Targeted
+rework does not increment the full-pass counter, but every
 `ReworkRequest`, its trigger, and its outcome must be recorded in the
 `LoopRunRecord`.
 
@@ -584,14 +583,13 @@ material equipment risk, production access, or an irreversible product choice:
 ## Agent and model policy
 
 Invoke `model-aware-orchestration` before delegating, including its mandatory
-delegation-mechanics section. Prefer retained context and few agents over a
-large swarm, but every role stage and every swarm member still runs as a real
+delegation-mechanics section. Prefer retained context and few agents over large
+swarms, but every role stage and every swarm member still runs as a real
 sub-agent or child session — never as inline narration in the coordinator's
 own context. Concretely: use a sub-agent call (background mode by default, so
-the coordinator keeps moving; sync only for something small enough to block
+the coordinator keeps moving; sync only for work small enough to block
 on) for in-repo role work, and a genuine child project session for cross-repo
-or PR-sized work. Launch every disjoint swarm member in the same batch of
-calls.
+or PR-sized work. Launch disjoint swarm members in the same batch of calls.
 
 - Product/UX judgment: design-capable model.
 - Difficult architecture or adversarial review: high-capability reasoning model.
@@ -606,7 +604,7 @@ disjoint work with clear ownership.
 
 Maintain an `AgentRegistry` in session state (a small table or artifact):
 `role | agent_id | scope | model | last_commit_seen | tasks_done | status`.
-Update it at every launch, completion, and retirement. Before any delegation,
+Update it at every launch, completion, and retirement. Before delegation,
 consult the registry and apply `model-aware-orchestration` §Delegation
 protocol's warm-agent reuse and staleness rules in full — an idle agent with
 the same role and overlapping scope gets a follow-up message, not a cold
@@ -667,7 +665,7 @@ Update the session-state `LoopRunRecord` with user interventions, local repairs,
 full replans, and termination reason. Also record per-stage routing telemetry:
 which model/effort ran each stage, escalations and their triggers, gate
 verdicts, and whether cheap-tier output survived downstream gates unchanged.
-This telemetry is the raw material for tuning routing rules and skill
+This telemetry is raw material for tuning routing rules and skill
 guardrails in later passes; without it the system cannot learn from its own
 runs.
 

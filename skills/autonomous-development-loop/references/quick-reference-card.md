@@ -1,7 +1,7 @@
 # Autonomous Development Loop — Normal Procedures Card
 
-Read-do. Every box must be checked with observable evidence, not recalled from
-memory. If any box is unchecked, stop and route to the owning stage — do not
+Read-do. Check every box with observable evidence, not memory. If any box is
+unchecked, stop and route to the owning stage — do not
 narrate past a failed box. Rationale, stage descriptions, and the full
 sequencing rules live in `SKILL.md`; this card is the only thing you must
 re-derive from memory each pass.
@@ -18,9 +18,9 @@ DIRECT, IMPLEMENT, QA, or any swarm member).
 - [ ] **C4** `SELECT status FROM todos WHERE id IN (<this stage's deps>)` →
       every row == `done`.
 - [ ] **C5** `AcceptanceTestPlan` row count == (`StorySet` row count +
-      applicable `StateMatrix` row count), or every gap carries a named
+      applicable `StateMatrix` row count), or every gap has a named
       `justified_exception` id.
-- [ ] **C6** This turn's action is a `task`/sub-agent/child-session tool call —
+- [ ] **C6** This turn's action is a `task`/sub-agent/child-session tool call,
       not an `edit`/`create` tool call targeting a production-code path.
 - [ ] **C7** `AgentRegistry` checked for an idle agent with the same role and
       overlapping, non-stale scope before issuing a cold launch (per
@@ -34,7 +34,7 @@ Run before every `validated-milestone-commit` invocation.
       (no unmapped file or hunk).
 - [ ] **K2** `session_state["StrategyReadinessVerdict"]` == `READY`.
 - [ ] **K3** Repository's declared focused-test command: exit code `0`
-      (record the command and its exit code).
+      (record command and exit code).
 - [ ] **K4** Repository's declared broader/required-suite command: exit code
       `0`, or explicitly marked not-applicable per written repository policy.
 - [ ] **K5** `AcceptanceTestPlan`: `COUNT(status != 'green' AND

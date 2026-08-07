@@ -6,37 +6,36 @@ description: Run a low-cost, read-only swarm of up to 10 parallel gpt-5.6-luna r
 # Autonomous Discovery Swarm
 
 Act as the loop's cheap, parallel reconnaissance layer. This skill runs
-**before** effort classification and before any role skill loads. Its only job
-is to turn a raw area of interest into a compact, trustworthy
+**before** effort classification and before role skills load. Its job is to
+turn a raw area of interest into a compact, trustworthy
 `DiscoveryDossier` so that `adaptive-workflow-compiler` and every downstream
 role start from assembled context instead of spending expensive-model turns
 rediscovering the repository.
 
-This is strictly read-only reconnaissance. It never edits files, never commits,
-and never makes product/design/technical decisions. It answers questions and
-maps territory.
+This is strictly read-only reconnaissance: it never edits files, commits, or
+makes product/design/technical decisions. It answers questions and maps
+territory.
 
 ## When to use
 
 - Automatically at the start of `autonomous-development-loop`, right after the
   Start contract's step 2 (inspect branch/working tree/history) and before
-  `adaptive-workflow-compiler` classifies effort — whenever the area of
-  interest is broad, unfamiliar, or spans more than a small, already-well-known
-  surface.
+  `adaptive-workflow-compiler` classifies effort — whenever the area is broad,
+  unfamiliar, or spans more than a small, well-known surface.
 - Automatically at the start of `autonomous-micro-sweep`'s partitioning step,
   to find focus areas instead of guessing them.
-- Standalone, when the user just wants a fast research/context pass without
+- Standalone, when the user wants a fast research/context pass without
   committing to implementation.
 
-Skip it only when the target is already a single, precisely named file or
-function the coordinator already understands — spawning a swarm to answer a
-question you can already answer in one lookup is waste.
+Skip it only when the target is a single, precisely named file or function the
+coordinator understands — spawning a swarm to answer a question you can answer
+in one lookup is waste.
 
 ## Phase 1: SWARM (parallel, read-only)
 
 ### Two research lanes
 
-Mirror how a real product organization runs discovery: an internal audit lane
+Mirror product discovery: an internal audit lane
 (what do we have, how does it behave) and an external research lane (what does
 the domain expect, what is the state of the art). Allocate the swarm across
 both lanes according to the problem:
@@ -57,7 +56,7 @@ both lanes according to the problem:
 
 A mostly-internal task (small refactor area) may use zero external agents; a
 new-domain feature may justify an even split. Decide per problem, still within
-the 10-session cap across both lanes.
+the 10-session cap.
 
 ### External research guardrails
 
@@ -66,16 +65,15 @@ the 10-session cap across both lanes.
   ("macOS menu bar app restore window focus pattern"), not the codebase.
 - Prefer official documentation, standards, and authoritative sources over
   forums; when using community sources, mark them as such.
-- Every external claim in the dossier carries its source URL, its date or
-  version relevance, and a fact-vs-opinion label.
-- External findings are input for the product/technical roles, never
-  decisions: the swarm reports options and evidence, it does not pick the
-  library or the design.
+- Every external claim in the dossier carries its source URL, date or version
+  relevance, and a fact-vs-opinion label.
+- External findings inform the product/technical roles, never decisions: the
+  swarm reports options and evidence; it does not pick the library or design.
 
 ### Partition into research angles
 
-Break the raw area of interest into **distinct research angles**, sized to the
-scope rather than defaulting to the cap: a narrow or partly-known area
+Break the area of interest into **distinct research angles**, sized to the
+scope instead of defaulting to the cap: a narrow or partly-known area
 warrants 3–4 angles; only a genuinely broad, unfamiliar, or multi-surface area
 justifies approaching 10. Parallelism buys latency, not lower cost — every
 session pays its own context, so do not spawn sessions the scope does not
@@ -106,40 +104,40 @@ Every discovery sub-agent receives:
 1. One precise research angle or question set, plus the repository/path and
    any already-known constraints.
 2. Explicit read-only boundary: no edits, no commits, no destructive commands,
-   no running builds/tests unless required to answer the question and safe
+   no running builds/tests unless needed to answer the question and safe
    per repository policy.
-3. Instruction to explore precisely, not exhaustively — find the specific
+3. Instruction to explore precisely, not exhaustively — find the
    files, behaviors, or facts that answer its angle, then stop.
 4. A required output shape: a short structured finding containing the
    question, the answer, supporting file paths/line references, confidence,
    and any new open question it surfaced.
 5. **Verifiability anchor rule:** every claim in the finding must carry a
    checkable anchor — a `file:line` reference for internal findings, a source
-   URL for external ones. A claim with no anchor must be explicitly labeled
+   URL for external ones. A claim with no anchor must be labeled
    `speculative`. Swarm output without ground truth accumulates confidence,
    not truth; anchors are what make this swarm's output trustworthy at scale.
 
 ### Model policy (fixed, not delegated)
 
-- Every discovery sub-agent runs on **gpt-5.6-luna, effort low or medium**,
-  unconditionally. This phase trades depth for breadth and speed; do not
+- Every discovery sub-agent runs on **gpt-5.6-luna, effort low or medium**.
+  This phase trades depth for breadth and speed; do not
   escalate model or effort even when an angle looks hard — a sub-agent that
   cannot resolve its angle reports it as an open question with its confidence
   marked low instead of spending a stronger model to force an answer.
-- This overrides the general model-routing guidance in
-  `model-aware-orchestration` for this phase specifically, the same way
-  `autonomous-micro-sweep` fixes its swarm phase to one cheap model.
+- This overrides `model-aware-orchestration`'s general model-routing guidance
+  for this phase, just as `autonomous-micro-sweep` fixes its swarm phase to
+  one cheap model.
 
 ### Parallel execution rule
 
-Launch all selected sub-agents as real sub-agent calls in the same batch of
-tool invocations — never narrated inline, never sequential when they could
-batch (full delegation mechanics: `model-aware-orchestration` §Delegation
+Launch all selected sub-agents as real sub-agent calls in one batch of tool
+invocations — never narrated inline, never sequential when batching works
+(full delegation mechanics: `model-aware-orchestration` §Delegation
 mechanics). Cap at 10 concurrent sessions per discovery pass; the
 coordinator's context grows only by each structured finding, never the full
 exploration transcript. If the environment cannot spawn a real sub-agent for
-this phase, say so explicitly and fall back to a smaller, honestly-sequential
-research plan instead of simulating the swarm inline.
+this phase, say so and fall back to a smaller, honestly-sequential research
+plan instead of simulating the swarm inline.
 
 ## Phase 2: CONSOLIDATION (single session)
 
@@ -153,7 +151,7 @@ Run as one accountable pass after all discovery sub-agents complete.
    dossier sections that drive decisions (constraints, behavior, architecture
    map); at most they surface as open questions.
 3. Resolve contradictions between findings (two agents disagreeing about the
-   same fact) by a targeted follow-up check, not by picking one arbitrarily.
+   same fact) with a targeted follow-up check, not by picking one arbitrarily.
 4. Deduplicate overlapping findings.
 5. Assemble the `DiscoveryDossier`:
    - **cache key** — the repository HEAD commit hash (and area name) the
@@ -172,7 +170,7 @@ Run as one accountable pass after all discovery sub-agents complete.
    - assumptions and confidence levels;
    - open questions the swarm could not resolve, ranked by how much they block
      planning.
-6. Hand the `DiscoveryDossier` directly to the next consumer:
+6. Hand the `DiscoveryDossier` to the next consumer:
    - inside `autonomous-development-loop`: feeds `UNDERSTAND` and
      `adaptive-workflow-compiler`'s effort classification, so the compiler
      scores breadth/risk/coordination from assembled evidence rather than a
@@ -220,19 +218,19 @@ re-verify external claims older than a few weeks before relying on them.
   the `DiscoveryDossier`, never the raw per-sub-agent output directly.
 - **Cap at 10 parallel sessions** per pass.
 - **Confidence is explicit.** Every dossier section states measured vs.
-  observed vs. inferred vs. unknown, matching the same discipline
-  `autonomous-development-loop`'s UNDERSTAND stage already requires.
+  observed vs. inferred vs. unknown, matching the discipline
+  `autonomous-development-loop`'s UNDERSTAND stage requires.
 
 ## Relationship to the rest of the loop
 
 - This skill produces input for `UNDERSTAND` and `adaptive-workflow-compiler`;
   it does not replace either. The compiler still classifies effort and builds
-  the `WorkflowManifest`, but now starts from the dossier instead of raw
+  the `WorkflowManifest`, but now starts from the dossier, not raw
   exploration.
 - It does not replace `autonomous-product-lead`/`autonomous-technical-lead`
   discovery work — those roles still own product/technical judgment. The
-  swarm only removes the cost of basic repository reconnaissance from their
-  context budget.
+  swarm only removes basic repository reconnaissance from their context
+  budget.
 - Treat the dossier as session-state material (like the `WorkflowManifest`)
   unless it contains durable facts worth keeping in
   `living-project-knowledge`.
@@ -245,6 +243,6 @@ At the end of a discovery pass, report:
 - key findings feeding into UNDERSTAND/classification;
 - unresolved open questions and their blocking impact;
 - confidence levels;
-- whether the dossier is sufficient to proceed to classification, or whether
+- whether the dossier is enough to proceed to classification, or whether
   one more targeted follow-up (still cheap-model, still read-only) is needed
   first.

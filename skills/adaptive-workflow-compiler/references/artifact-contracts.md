@@ -1,8 +1,8 @@
 # Artifact Contracts
 
 Use these named artifacts to preserve traceability across product, design,
-engineering, QA, documentation, and commits. Produce only artifacts required by
-the compiled workflow.
+engineering, QA, documentation, and commits. Produce only artifacts the
+compiled workflow requires.
 
 ## Common envelope
 
@@ -39,7 +39,7 @@ Every artifact records:
 
 ### OpportunityMap
 
-- Required only for open-ended discovery with no named area/story yet; skip
+- Only for open-ended discovery with no named area/story yet; otherwise skip
   and record under `omitted_roles_and_stages` for a named-area task.
 - Candidate opportunity.
 - User impact.
@@ -55,7 +55,7 @@ Each story contains:
 - user;
 - need;
 - outcome;
-- current and proposed behavior;
+- current/proposed behavior;
 - meaningful states;
 - acceptance criteria;
 - success signal;
@@ -108,7 +108,7 @@ Use for technical work with no meaningful product-design change:
 ### FlowDelta
 
 MEDIUM/LOW default, replacing `CurrentJourney` + `TargetJourney` + `UserFlow`
-as separate documents:
+as separate docs:
 
 - Entry condition; current steps and target steps side by side.
 - Decision nodes/branches, including error, permission, unsupported, stale,
@@ -171,8 +171,8 @@ For each surface or component (HIGH-effort only; MEDIUM/LOW use
 MEDIUM/LOW default, merging `StateMatrix` + `InteractionSpecification`. One
 row per applicable state (default, active/selected, loading/busy, empty,
 disabled, unsupported, permission missing, error/recovery, stale/unknown,
-offline, reduced motion/contrast/keyboard/assistive-tech), each row carrying
-its trigger, expected result, controls/validation/copy, focus/keyboard/
+offline, reduced motion/contrast/keyboard/assistive-tech), each carrying its
+trigger, expected result, controls/validation/copy, focus/keyboard/
 motion/layout-stability, and accessibility semantics inline. Every row remains
 an `AcceptanceTestPlan` source row, exactly as `StateMatrix` rows are today.
 
@@ -225,7 +225,7 @@ No production implementation begins before this packet receives READY.
 ### AcceptanceTestPlan
 
 Produced during preparation, after the `TechnicalContract` and before the
-`TraceabilityMatrix`. Owned by the quality lead (authoring or reviewing),
+`TraceabilityMatrix`. Owned by the quality lead (authoring or reviewing) and
 grounded in the design contract's testable assertions.
 
 - One or more named test cases per selected story, written as
@@ -252,7 +252,7 @@ Rules:
 
 ### TraceabilityMatrix
 
-Standalone at HIGH; embedded `PreparationPacket` section at MEDIUM/LOW.
+Standalone at HIGH; embedded in `PreparationPacket` at MEDIUM/LOW.
 
 Map:
 
@@ -262,13 +262,13 @@ Need -> Story -> Flow/state -> Technical behavior -> Planned acceptance test
 ```
 
 Every required acceptance criterion must have at least one implementation owner
-and one quality signal, and every story must map to at least one
+and one quality signal, and every story must map to an
 `AcceptanceTestPlan` entry or justified exception.
 
 ### SliceGraph
 
-Standalone at HIGH or multi-slice tasks; embedded `PreparationPacket`
-section at MEDIUM/LOW single-slice.
+Standalone at HIGH or multi-slice tasks; embedded in `PreparationPacket`
+at MEDIUM/LOW single-slice.
 
 Each slice contains:
 
@@ -290,18 +290,18 @@ Each slice contains:
 - Risk-based test matrix.
 - Snapshot/screenshot scenarios.
 - Accessibility and runtime checks.
-- Performance methodology.
+- Performance method.
 - Required specialist reviews.
 
 ### StrategyReadinessVerdict
 
 - READY: product, design, technical, scope, and validation contracts are
-  sufficiently complete to implement without inventing missing behavior.
+  complete enough to implement without inventing missing behavior.
 - REVISE: name missing or contradictory artifacts and their owning role.
 - BLOCKED: unavailable evidence or an unsafe unresolved decision prevents honest
   planning.
 
-This verdict is pre-implementation and distinct from final `QualityVerdict`.
+This verdict is pre-implementation, distinct from final `QualityVerdict`.
 
 ### QualityEvidence
 

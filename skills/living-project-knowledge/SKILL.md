@@ -5,7 +5,7 @@ description: Continuously keep a project's product, design, architecture, curren
 
 # Living Project Knowledge
 
-Maintain the repository's documentation as operational memory for humans and
+Maintain repository documentation as operational memory for humans and
 agents. Update knowledge after every major stage and completed chunk, not only
 at the end.
 
@@ -24,7 +24,7 @@ design, architecture, quality, and completed-work truth into repository docs.
 4. Keep repository docs authoritative over this generic skill.
 
 If the repository has no workflow documentation, create the minimum useful
-structure rather than a documentation bureaucracy:
+structure, not a documentation bureaucracy:
 
 - one current-work document;
 - one backlog or roadmap document;
@@ -33,7 +33,7 @@ structure rather than a documentation bureaucracy:
 
 ## Knowledge model
 
-Maintain these concepts wherever the repository already stores them:
+Maintain these concepts where the repository already stores them:
 
 - **Product truth** - users, jobs, behavior, scope, and success criteria.
 - **Design truth** - flows, states, accessibility, interaction, and visual rules.
@@ -45,7 +45,7 @@ Maintain these concepts wherever the repository already stores them:
 - **Decisions** - durable choices, alternatives, rationale, and consequences.
 - **Quality evidence** - tests, snapshots, screenshots, runtime checks,
   performance evidence, and limitations.
-- **Completed work** - concise outcomes and links to commits/PRs when available.
+- **Completed work** - concise outcomes and commit/PR links when available.
 - **Known improvements** - non-blocking findings deferred intentionally.
 - **Preparation truth** - durable user needs, stories, story map, journeys,
   flows, design decisions, technical contracts, and accepted release slices.
@@ -77,12 +77,12 @@ Update documentation at these boundaries:
 
 - Document current truth, not a transcript of agent activity.
 - Write durable decisions as **distilled, executable guidance**: state the
-  rule, its boundary, and the concrete pattern to follow, so that a cheaper
+  rule, its boundary, and the concrete pattern to follow, so a cheaper
   or smaller model can later act on it without re-deriving the reasoning.
   Every well-distilled decision lowers the capability tier future work in
   that area requires.
 - Replace stale current-state text instead of endlessly appending status notes.
-- Append only genuinely durable decisions, evidence, and completed outcomes.
+- Append only durable decisions, evidence, and completed outcomes.
 - Reconcile contradictions across docs in the same chunk.
 - When you notice a documentation problem **outside** the current chunk's scope
   (duplication, stale section, missing cross-link, contradiction between docs,
@@ -98,7 +98,7 @@ Update documentation at these boundaries:
 - Do not include secrets, private captured data, or transient local paths unless
   the repository convention requires them.
 - Do not paste entire `WorkflowManifest`, `LoopCheckpoint`, or `LoopRunRecord`
-  documents into project documentation unless the repository explicitly uses an
+  documents into project documentation unless the repository uses an
   execution ledger.
 
 ## Consolidation pass
@@ -110,7 +110,7 @@ garbage collector. Run it only when triggered, not every loop:
 - ~3 milestone commits have landed since the last consolidation, **or**
 - the run is ending (alongside harvest-and-dismiss).
 
-One agent (Sonnet-tier low; reuse a warm one when available), documentation
+One agent (Sonnet-tier low; reuse a warm one if available), documentation
 files only. Consume the `DocDebt` ledger plus docs touched this run, then:
 
 - merge duplicated or overlapping sections into one canonical location;

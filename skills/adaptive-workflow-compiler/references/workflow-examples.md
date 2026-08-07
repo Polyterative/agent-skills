@@ -1,6 +1,6 @@
 # Workflow Examples
 
-These examples demonstrate compilation. They are patterns, not project facts.
+These examples show compilation. They are patterns, not project facts.
 
 ## Example 1: Small bug fix
 
@@ -17,7 +17,7 @@ Classification:
 - Coordination 0.
 - Total 1: LOW.
 
-Compiled workflow:
+Workflow:
 
 ```text
 Current behavior
@@ -33,7 +33,7 @@ Current behavior
 
 Skipped: opportunity mapping, alternative designs, navigation redesign, and
 performance work. The compressed READY gate checks behavior, scope, regression
-test, and validation in minutes; it is not a ceremonial full product exercise.
+test, and validation in minutes; not a ceremonial product exercise.
 
 ## Example 2: New onboarding capability
 
@@ -50,7 +50,7 @@ Classification:
 - Coordination 1.
 - Total 5: MEDIUM.
 
-Artifact chain (MEDIUM substitutes merged contracts per
+Chain (MEDIUM uses merged contracts per
 `references/artifact-contracts.md`):
 
 ```text
@@ -88,7 +88,7 @@ Classification:
 - Coordination 2.
 - Total 9: HIGH.
 
-Compiled workflow:
+Workflow:
 
 ```text
 Baseline screenshots/snapshots
@@ -135,7 +135,7 @@ Classification:
 - Coordination 1.
 - Total 6: MEDIUM.
 
-Compiled workflow:
+Workflow:
 
 ```text
 Representative interaction
@@ -156,7 +156,7 @@ Representative interaction
 
 Pass 1 completes implementation, but final QA finds that the selected flow
 solves permission recovery only after the user reaches an advanced diagnostics
-surface. The code works, but the original user need is not met.
+surface. The code works, but the original user need is unmet.
 
 Verdict:
 
@@ -179,7 +179,7 @@ UNDERSTAND with pass-1 evidence
 
 If pass 2 still fails the core journey, the coordinator does not begin pass 3.
 It asks once whether to continue, including the remaining gap and recommended
-next approach.
+approach.
 
 ## Example 6: Restore previous menu behavior
 
@@ -187,7 +187,7 @@ Input:
 
 > Put back the widget history range selector we had before.
 
-Compiled preparation:
+Preparation:
 
 ```text
 Git/history archaeology

@@ -11,7 +11,7 @@ design, and technical contracts.
 
 ## Pre-implementation strategy gate
 
-When invoked before implementation, review the `PreparationPacket` and return a
+When invoked before implementation, review the `PreparationPacket` and return
 `StrategyReadinessVerdict`:
 
 - **READY** - user needs, stories, story map, journeys/flows, affected
@@ -21,7 +21,7 @@ When invoked before implementation, review the `PreparationPacket` and return a
   and its owning product/design/technical role.
 - **BLOCKED** - required evidence or a safety-critical decision is unavailable.
 
-For product, UI, feature, redesign, or navigation work, never return READY when:
+For product, UI, feature, redesign, or navigation work, never return READY if:
 
 - stories are absent, generic, duplicated, or implementation-shaped;
 - no `TypicalUseCaseSet` grounds the stories in concrete, evidence-backed
@@ -73,7 +73,7 @@ Select only relevant rows:
 
 ## Validation order
 
-1. Inspect the implementation brief and changed diff. If no brief exists during
+1. Inspect the implementation brief and diff. If none exists during
    standalone invocation, derive the changed contract from the working-tree
    diff, recent commits, and repository test conventions, then state inferred
    acceptance criteria in the verdict.
@@ -83,8 +83,8 @@ Select only relevant rows:
 3. Build a `QualityPlan` mapping every required acceptance criterion and
    flow/state to implementation and evidence.
 4. Reconcile the `AcceptanceTestPlan`: confirm every planned test exists in
-   the tree, was observed failing before its implementation (RED evidence in
-   the delivery handoff or run record), now executes and passes, and was not
+   the tree, failed before implementation (RED evidence in the delivery
+   handoff or run record), now runs and passes, and was not
    weakened; confirm each untestable exception's alternative evidence exists.
    Any silent gap, weakened assertion, or deleted planned test is blocking.
 5. Run focused tests for changed contracts.
@@ -96,7 +96,7 @@ Select only relevant rows:
    navigation, disclosure, loading, resize, focus, and recovery scenarios at
    relevant sizes. Unexpected layout movement, clipping, focus loss, or
    reordering is blocking.
-10. Capture additional screenshots only when they add evidence.
+10. Capture additional screenshots only if they add evidence.
 11. Validate runtime behavior using repository-supported automation.
 12. Run performance comparisons when the increment claims or risks performance.
 13. Run the broader required suite before approval.
@@ -116,12 +116,12 @@ Select only relevant rows:
 
 ## Screenshot selection
 
-Use the strongest supported mechanism in this order:
+Use the strongest supported mechanism in order:
 
 1. Repository-native snapshot tests and snapshot scripts.
 2. Headless platform capture such as browser automation or simulator tooling.
 3. Accessibility-tree inspection for state and control verification.
-4. Constrained application-window or region screenshots only when pixels are
+4. Constrained application-window or region screenshots only if pixels are
    necessary and repository policy allows desktop automation.
 
 When using macOS UI automation, invoke `mac-use-fastpath`:
@@ -132,7 +132,7 @@ When using macOS UI automation, invoke `mac-use-fastpath`:
 - batch relevant states;
 - never begin with a full-screen screenshot.
 
-If repository guidance forbids desktop screenshots, obey it. Do not substitute
+If repository guidance forbids desktop screenshots, obey it; do not substitute
 an unauthorized capture for native snapshots.
 
 ## Swift and Apple-platform validation
@@ -185,11 +185,11 @@ three review/fix rounds. Never approve on tests alone when
 performance evidence for this slice: `COUNT(quality_gates entries without a
 distinct evidence artifact) == 0` before PASS.
 
-Use REPAIR for a local defect within a valid workflow. Use REWORK when a named
+Use REPAIR for a local defect in a valid workflow. Use REWORK when a named
 upstream artifact is invalidated by execution evidence but the frame and story
 hold — it costs one targeted backtrack, not a full pass. Use REPLAN only when
 fixing locally or reworking one stage would preserve the wrong outcome. REPLAN
-requests a complete new pass from the coordinator and must include the evidence
+requests a new pass from the coordinator and must include the evidence
 that invalidated the current artifacts.
 
 REPLAN is permitted even when the evidence invalidates this quality role's own
@@ -202,7 +202,7 @@ the workflow or an upstream artifact is wrong.
 Required-test unavailability always returns BLOCKED with reason
 `test-unavailable`; never PASS with a limitation.
 
-On PASS, report the verdict and evidence to the invoker. Inside the autonomous
+On PASS, report verdict and evidence to the invoker. Inside the autonomous
 loop, the coordinator - not this skill - invokes
-`validated-milestone-commit`. When invoked standalone with no coordinator, you
-may invoke it directly after PASS only if the user asked for a commit.
+`validated-milestone-commit`. When standalone with no coordinator, you may
+invoke it directly after PASS only if the user asked for a commit.
