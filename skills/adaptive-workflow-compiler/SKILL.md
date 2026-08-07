@@ -84,13 +84,18 @@ an execution-control classification, not a time estimate.
 ### MEDIUM
 
 - Produce explicit product/design/technical contracts for affected concerns.
+- Skip `OpportunityMap` unless the task is open-ended discovery rather than a
+  named area/story.
 - For product or UI behavior, produce 5-12 substantive stories, a `StoryMap`,
-  current and target journeys, and complete affected flows.
-- Produce an `AcceptanceTestPlan` covering every selected story and every
-  applicable `StateMatrix` row; implementation is test-first against it.
-- Include current and target flow when user behavior changes.
+  and a `FlowDelta` (current/target/branches in one contract, per
+  `references/artifact-contracts.md`) instead of separate journey/flow docs.
+- Produce an `InteractionContract` (merged `StateMatrix` +
+  `InteractionSpecification`) covering every applicable state as a testable
+  assertion; produce an `AcceptanceTestPlan` covering every selected story and
+  every applicable `InteractionContract` row.
+- Embed `TraceabilityMatrix` and `SliceGraph` as `PreparationPacket` sections
+  rather than standalone documents unless the task has more than one slice.
 - Use design and code review where applicable.
-- Split work into independently validated slices when useful.
 - Usually one to three milestone commits.
 
 ### HIGH
@@ -205,20 +210,22 @@ ProblemFrame
 -> StorySet
 -> StoryMap
 -> SelectedStory or selected release slice
--> CurrentJourney
--> TargetJourney
--> UserFlow
--> affected IA/navigation/surfaces/states/interactions
+-> CurrentJourney/TargetJourney/UserFlow (HIGH) or FlowDelta (MEDIUM/LOW)
+-> affected IA/navigation/surfaces/states/interactions (HIGH) or
+   InteractionContract (MEDIUM/LOW)
 -> TechnicalContract
 -> AcceptanceTestPlan
--> TraceabilityMatrix
--> SliceGraph
+-> TraceabilityMatrix and SliceGraph (standalone at HIGH; embedded
+   PreparationPacket sections at MEDIUM/LOW)
 -> PreparationPacket
 -> StrategyReadinessVerdict
 ```
 
-The compiler may not remove these stages merely to save effort. It may compress
-their representation for LOW work.
+The compiler may not remove these stages merely to save effort. At MEDIUM and
+LOW it substitutes the merged `FlowDelta`/`InteractionContract` artifacts and
+embeds `TraceabilityMatrix`/`SliceGraph` in the `PreparationPacket`, per
+`references/artifact-contracts.md`; `OpportunityMap` is skipped for a
+named-area task. It may compress representation further for LOW work.
 
 Pure bug, refactor, maintenance, or performance work that does not change user
 meaning may replace the full product chain with a `BehaviorContract`. This

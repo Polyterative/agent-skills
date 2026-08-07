@@ -277,8 +277,9 @@ When the manifest selects product discovery, invoke
 - Select one vertical slice, not a broad theme.
 - Update the backlog and current-work documentation.
 - Produce the named product artifacts required by the manifest, such as
-  `ProblemFrame`, `UserNeedSet`, `OpportunityMap`, `StorySet`, and
-  `StoryMap` and `SelectedStory`.
+  `ProblemFrame`, `UserNeedSet`, `OpportunityMap` (only for open-ended
+  discovery, not a named area/story), `StorySet`, and `StoryMap` and
+  `SelectedStory`.
 
 ### 3. DESIGN
 
@@ -314,7 +315,9 @@ coordinator may produce a compact `TechnicalContract`.
 ### 5. PLAN_SLICE
 
 The coordinator owns and combines product, design, and technical contracts into
-one `PreparationPacket`, implementation brief, and `SliceGraph` containing:
+one `PreparationPacket` — embedding `TraceabilityMatrix` and `SliceGraph` as
+sections at MEDIUM/LOW with one slice, standalone at HIGH or multi-slice work
+per `adaptive-workflow-compiler`'s artifact contracts — containing:
 
 - user problem and expected outcome;
 - scope and explicit non-goals;
@@ -348,21 +351,10 @@ The coordinator may not invoke `autonomous-delivery-lead` until READY.
 
 Invoke `autonomous-delivery-lead`.
 
-Entry checklist — verify mechanically before the first code edit, and abort to
-the owning stage if any item fails:
-
-1. `WorkflowManifest` exists in session state and lists this slice.
-2. `PreparationPacket` exists as a session-state artifact.
-3. `StrategyReadinessVerdict` artifact exists and reads READY.
-4. All todos for preparation stages this slice depends on are `done`.
-5. The slice's acceptance criteria are written down, not implied.
-6. The `AcceptanceTestPlan` exists and maps every story and state this slice
-   covers to a named planned test or a justified exception.
-7. The next action is a real sub-agent invocation of
-   `autonomous-delivery-lead`. If the coordinator is about to edit code
-   itself — for any reason, including a repository single-writer policy —
-   abort: that policy is satisfied by the delivery lead being the only
-   active writer, not by the coordinator absorbing the role.
+Entry checklist — the canonical, binary-checkable gate is
+`references/quick-reference-card.md` §BEFORE-DELEGATE (C1-C7). Run it
+mechanically before the first code edit and abort to the owning stage if any
+item fails; do not re-derive or duplicate the checklist here.
 
 - Follow repository session and branch policy.
 - Work test-first per the `AcceptanceTestPlan`'s RED-before-GREEN rule (see
@@ -451,9 +443,11 @@ must describe current truth, not merely narrate the implementation.
 
 Invoke `validated-milestone-commit`.
 
-Commit every completed major chunk when and only when its required checks pass.
-The documentation for that chunk belongs in the same commit unless repository
-conventions require a separate documentation commit.
+Before invoking it, run `references/quick-reference-card.md` §BEFORE-COMMIT
+(K1-K7) — the canonical gate; `validated-milestone-commit` owns the full
+commit mechanics. Commit every completed major chunk when and only when its
+required checks pass. The documentation for that chunk belongs in the same
+commit unless repository conventions require a separate documentation commit.
 
 ### 11. OBSERVE AND PRIORITIZE NEXT
 
@@ -646,8 +640,11 @@ implementing slice N+1 while slice N is in QA — like a pipeline. Conditions:
   contracts immediately pauses N+1;
 - commits remain per-slice and test-gated; no combined commits across
   pipelined slices;
-- at most two slices in flight. If coordination cost visibly exceeds the
-  throughput gain, fall back to sequential.
+- at most two slices in flight. Fall back to sequential the moment either
+  slice needs more than one coordinator message per sub-agent turn to keep
+  N and N+1 off each other's files (judgment call on the trend, not a
+  precise threshold — see `model-aware-orchestration` for the full
+  reasoning).
 
 ## Completion report
 

@@ -39,6 +39,8 @@ Every artifact records:
 
 ### OpportunityMap
 
+- Required only for open-ended discovery with no named area/story yet; skip
+  and record under `omitted_roles_and_stages` for a named-area task.
 - Candidate opportunity.
 - User impact.
 - Confidence.
@@ -88,6 +90,7 @@ Use for technical work with no meaningful product-design change:
 
 ### CurrentJourney and TargetJourney
 
+- HIGH-effort only; MEDIUM/LOW use `FlowDelta` instead.
 - Entry condition.
 - Ordered user steps.
 - User intent and system response at each step.
@@ -96,10 +99,22 @@ Use for technical work with no meaningful product-design change:
 
 ### UserFlow
 
+- HIGH-effort only; its branches fold into `FlowDelta` at MEDIUM/LOW.
 - Nodes and decisions.
 - Entry/exit conditions.
 - System and user actions.
 - Error, permission, unsupported, stale, and recovery paths.
+
+### FlowDelta
+
+MEDIUM/LOW default, replacing `CurrentJourney` + `TargetJourney` + `UserFlow`
+as separate documents:
+
+- Entry condition; current steps and target steps side by side.
+- Decision nodes/branches, including error, permission, unsupported, stale,
+  and recovery paths.
+- Friction resolved and exit outcome; each branch is a distinct
+  `AcceptanceTestPlan` coverage row.
 
 ### InformationArchitecture
 
@@ -123,7 +138,8 @@ Use for technical work with no meaningful product-design change:
 
 ### StateMatrix
 
-For each surface or component:
+For each surface or component (HIGH-effort only; MEDIUM/LOW use
+`InteractionContract` instead):
 
 - default;
 - active/selected;
@@ -139,6 +155,7 @@ For each surface or component:
 
 ### InteractionSpecification
 
+- HIGH-effort only (folds into `InteractionContract` at MEDIUM/LOW).
 - Controls and behavior.
 - Validation.
 - Focus and keyboard.
@@ -148,6 +165,16 @@ For each surface or component:
 - Responsive/adaptive behavior.
 - Layout-stability rules: controls and content that must not shift unexpectedly
   during selection, loading, resizing, disclosure, or state changes.
+
+### InteractionContract
+
+MEDIUM/LOW default, merging `StateMatrix` + `InteractionSpecification`. One
+row per applicable state (default, active/selected, loading/busy, empty,
+disabled, unsupported, permission missing, error/recovery, stale/unknown,
+offline, reduced motion/contrast/keyboard/assistive-tech), each row carrying
+its trigger, expected result, controls/validation/copy, focus/keyboard/
+motion/layout-stability, and accessibility semantics inline. Every row remains
+an `AcceptanceTestPlan` source row, exactly as `StateMatrix` rows are today.
 
 ### DesignDirection
 
@@ -225,6 +252,8 @@ Rules:
 
 ### TraceabilityMatrix
 
+Standalone at HIGH; embedded `PreparationPacket` section at MEDIUM/LOW.
+
 Map:
 
 ```text
@@ -237,6 +266,9 @@ and one quality signal, and every story must map to at least one
 `AcceptanceTestPlan` entry or justified exception.
 
 ### SliceGraph
+
+Standalone at HIGH or multi-slice tasks; embedded `PreparationPacket`
+section at MEDIUM/LOW single-slice.
 
 Each slice contains:
 

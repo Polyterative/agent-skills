@@ -68,11 +68,12 @@ Concretely:
   limitation explicitly and fall back to a smaller, honestly-sequential plan
   instead of pretending the reset happened.
 
-Before delegating, confirm the delegation actually reduces the coordinator's
-context growth. If a "sub-agent" call is issued but its full output is then
-re-read and re-reasoned-over token-for-token in the coordinator's context
-anyway, the reset only exists on paper — keep the deliverable extraction
-disciplined (findings/dossier/report, not raw transcript).
+Before delegating, check the observable proxy for context growth: does the
+coordinator's next message quote or re-derive the sub-agent's raw tool-call
+log or file contents verbatim, rather than a compact deliverable (findings,
+dossier, report) at or under the Channel-economy budget below? If yes, the
+reset exists on paper only — tighten the deliverable extraction; do not
+re-read and re-reason over the sub-agent's full transcript token-for-token.
 
 ## Model routing
 

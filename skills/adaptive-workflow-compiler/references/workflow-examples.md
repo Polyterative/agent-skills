@@ -50,22 +50,19 @@ Classification:
 - Coordination 1.
 - Total 5: MEDIUM.
 
-Artifact chain:
+Artifact chain (MEDIUM substitutes merged contracts per
+`references/artifact-contracts.md`):
 
 ```text
 ProblemFrame
 -> UserNeedSet
 -> StorySet
 -> StoryMap/SelectedStory
--> CurrentJourney
--> TargetJourney
--> UserFlow
--> StateMatrix
--> InteractionSpecification
+-> FlowDelta
+-> InteractionContract
 -> TechnicalContract
 -> AcceptanceTestPlan
--> SliceGraph
--> PreparationPacket
+-> PreparationPacket (TraceabilityMatrix and SliceGraph embedded)
 -> StrategyReadinessVerdict READY
 -> QualityEvidence
 ```

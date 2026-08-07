@@ -32,7 +32,8 @@ For product, UI, feature, redesign, or navigation work, never return READY when:
 - the target flow omits alternate, error, recovery, empty, loading, permission,
   unsupported, or stale states that apply;
 - UI/navigation decisions cannot be traced to selected stories;
-- no `AcceptanceTestPlan` exists, a story or applicable `StateMatrix` row has
+- no `AcceptanceTestPlan` exists, a story or applicable state row (from the
+  `InteractionContract` at MEDIUM, `StateMatrix` at HIGH) has
   no mapped planned test, an entry is vague about how it fails before
   implementation, or an untestable exception lacks alternative evidence and
   justification;
@@ -76,7 +77,8 @@ Select only relevant rows:
    standalone invocation, derive the changed contract from the working-tree
    diff, recent commits, and repository test conventions, then state inferred
    acceptance criteria in the verdict.
-2. Read the `WorkflowManifest`, `TraceabilityMatrix`, `SliceGraph`, and relevant
+2. Read the `WorkflowManifest`, `TraceabilityMatrix`, `SliceGraph` (standalone
+   at HIGH; `PreparationPacket` sections at MEDIUM/LOW), and relevant
    product/design/technical artifacts when available.
 3. Build a `QualityPlan` mapping every required acceptance criterion and
    flow/state to implementation and evidence.
@@ -178,8 +180,10 @@ Return one verdict:
   be resolved within the current workflow.
 
 Non-blocking findings become documented follow-up opportunities. Allow at most
-three review/fix rounds. Never approve because tests alone pass when visual,
-runtime, migration, safety, or performance evidence is required.
+three review/fix rounds. Never approve on tests alone when
+`WorkflowManifest.quality_gates` lists visual, runtime, migration, safety, or
+performance evidence for this slice: `COUNT(quality_gates entries without a
+distinct evidence artifact) == 0` before PASS.
 
 Use REPAIR for a local defect within a valid workflow. Use REWORK when a named
 upstream artifact is invalidated by execution evidence but the frame and story

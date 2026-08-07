@@ -61,7 +61,9 @@ decide user behavior.
    - performance risks and budgets.
 9. Produce a `TraceabilityMatrix` mapping every selected acceptance criterion
    and required flow/state to technical behavior, proposed slice ownership, and
-   evidence. The coordinator finalizes the in-loop `SliceGraph`.
+   evidence (standalone artifact at HIGH effort; embedded `PreparationPacket`
+   section at MEDIUM/LOW). The coordinator finalizes the in-loop `SliceGraph`
+   (same embedding rule).
 10. Update architecture and decision knowledge through
    `living-project-knowledge`.
 

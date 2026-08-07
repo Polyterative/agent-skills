@@ -44,7 +44,9 @@ claim as measured, observed, inferred, or unknown.
 4. Produce a `UserNeedSet` describing situation, need, friction, desired
    outcome, evidence, and confidence, derived from the typical use cases.
 5. Describe the current user journey and the friction or unmet need.
-6. Generate an `OpportunityMap` containing a balanced opportunity set:
+6. Generate an `OpportunityMap` only for open-ended "what should I build"
+   discovery; skip it for a named-area task (record the omission). When
+   produced, it contains a balanced opportunity set:
    - user-facing improvements;
    - error, recovery, and empty-state improvements;
    - accessibility and inclusion;

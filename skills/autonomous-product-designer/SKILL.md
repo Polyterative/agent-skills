@@ -49,34 +49,30 @@ artifacts for revision rather than inventing them.
    - visual polish without behavioral change.
 3. Map each selected story to the journey step, decision, state, or recovery
    path it changes.
-4. Map the `CurrentJourney` from entry to outcome.
+4. Map the current journey from entry to outcome — `CurrentJourney` at HIGH
+   effort, or the "current" half of `FlowDelta` at MEDIUM/LOW.
 5. Identify confusion, unnecessary decisions, hidden state, unsafe defaults,
    dead ends, and recovery gaps.
 6. For redesigns, produce a baseline and `PreserveInventory` before proposing
    changes. Compare two or three materially different `DesignDirection`
    alternatives when the direction is not already constrained by repository
    decisions.
-7. Design the `TargetJourney` and `UserFlow`.
+7. Design the target journey and flow — `TargetJourney`+`UserFlow` at HIGH
+   effort, or the merged `FlowDelta` (current/target/branches in one
+   contract) at MEDIUM/LOW.
 8. Produce `InformationArchitecture`, `NavigationModel`, and
-   `SurfaceInventory` when the task changes grouping, destinations, routes, or
-   application surfaces.
-9. Produce a `StateMatrix` covering all meaningful states, each row written as
-   a testable assertion (observable trigger, expected user-visible result):
-   - default;
-   - active or selected;
-   - loading or busy;
-   - empty;
-   - disabled;
-   - unsupported;
-   - permission missing;
-   - error and recovery;
-   - stale or unknown;
-   - reduced motion and increased contrast where relevant.
-10. Produce an `InteractionSpecification` defining keyboard, focus,
-   assistive-technology, localization, motion, copy, validation, and responsive
-   layout behavior. Write each behavior as a verifiable assertion so the
-   quality lead can derive `AcceptanceTestPlan` entries from it without
-   design interpretation.
+   `SurfaceInventory` only when the task changes grouping, destinations,
+   routes, or application surfaces; otherwise omit them.
+9. Produce the state/interaction contract, each row/section written as a
+   testable assertion (observable trigger, expected user-visible result):
+   at HIGH effort as a separate `StateMatrix` (default, active/selected,
+   loading/busy, empty, disabled, unsupported, permission missing,
+   error/recovery, stale/unknown, reduced motion/contrast) plus a separate
+   `InteractionSpecification` (keyboard, focus, assistive-technology,
+   localization, motion, copy, validation, responsive layout); at MEDIUM/LOW
+   as one merged `InteractionContract` carrying both per state row. Write
+   each behavior as a verifiable assertion so the quality lead can derive
+   `AcceptanceTestPlan` entries from it without design interpretation.
 11. Define layout-stability invariants for selection, loading, disclosure,
     navigation, resizing, and recovery.
 12. Run a **consistency audit** against the `ConsistencyBaseline`: map every
@@ -126,13 +122,12 @@ Do not treat visual restyling alone as a redesign.
 
 Produce an experience contract containing:
 
-- `CurrentJourney` and `TargetJourney`;
-- `UserFlow`;
-- `InformationArchitecture` changes;
-- `NavigationModel`;
-- `SurfaceInventory`;
-- `StateMatrix`;
-- `InteractionSpecification`;
+- `FlowDelta` (MEDIUM/LOW), or `CurrentJourney`+`TargetJourney`+`UserFlow`
+  (HIGH);
+- `InformationArchitecture`, `NavigationModel`, `SurfaceInventory` — only when
+  navigation/IA actually changes;
+- `InteractionContract` (MEDIUM/LOW), or `StateMatrix`+`InteractionSpecification`
+  (HIGH);
 - `ConsistencyBaseline` (governing design system or de facto conventions) and
   `DeviationRegister` (each deviation with its justification);
 - selected `DesignDirection` and `PreserveInventory` for redesigns;

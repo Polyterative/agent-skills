@@ -3,6 +3,13 @@
 Recipes are stage patterns, not rigid pipelines. Compose and trim them according
 to the task, effort classification, repository evidence, and risk.
 
+At MEDIUM/LOW effort, substitute the merged artifacts defined in
+`references/artifact-contracts.md`: `FlowDelta` replaces
+`CurrentJourney`/`TargetJourney`/`UserFlow`, `InteractionContract` replaces
+`StateMatrix`/`InteractionSpecification`, `TraceabilityMatrix`/`SliceGraph`
+embed as `PreparationPacket` sections, and `OpportunityMap` is skipped for a
+named-area task. The recipes below show the full HIGH-effort form.
+
 ## New feature
 
 ```text

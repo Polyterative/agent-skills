@@ -11,23 +11,31 @@ require the human to ask separately for each commit.
 
 ## Preconditions
 
-Do not commit until all are true:
+Do not commit until all seven hold. These are the canonical kill items (also
+mirrored as K1-K7 in `autonomous-development-loop`'s
+`references/quick-reference-card.md` for pause-point use inside the loop);
+this file owns their mechanics.
 
-1. The chunk is coherent and independently understandable.
-2. Its acceptance criteria are satisfied.
-3. Required focused tests pass.
-4. Required broader tests pass.
-5. Required snapshot, screenshot, accessibility, runtime, migration, safety, or
-   performance checks pass or are explicitly not applicable.
-6. `living-project-knowledge` has reconciled relevant documentation.
-7. No temporary debugging, generated junk, or unrelated edits are included.
-8. Repository instructions allow commits in the current context.
-9. The active `WorkflowManifest`, `SliceGraph`, and traceability records mark the
-   milestone's required artifacts and gates complete when those records exist.
-10. The strategy gate is READY and every staged file/hunk maps to the milestone
-    in `ScopeMap`.
-11. Required tests actually executed and passed. `unavailable`, static review,
-    or build-only evidence does not satisfy this condition.
+1. **K1** `git diff --staged --stat` file/hunk list is a subset of
+   `ScopeMap[milestone]` — no unmapped file or hunk staged.
+2. **K2** The strategy gate's `StrategyReadinessVerdict` reads READY.
+3. **K3** The repository's declared focused-test command exits `0`.
+4. **K4** The repository's declared broader/required-suite command exits `0`,
+   or is explicitly marked not-applicable per written repository policy.
+5. **K5** Every `AcceptanceTestPlan` entry is green, or carries a named
+   `justified_exception`: `COUNT(status != 'green' AND justified_exception IS
+   NULL) == 0`.
+6. **K6** `living-project-knowledge`'s last-updated marker is newer than this
+   milestone's start checkpoint.
+7. **K7** Repository instructions were re-read this turn and confirmed to
+   permit a commit in the current context (branch, worktree, and push policy).
+
+Procedure note (judgment calls, not gates — apply before staging, not as a
+pass/fail check): confirm the chunk is coherent enough that one honest
+conventional-commit subject describes all of it, and that no temporary
+debugging, generated junk, or unrelated edit rides along — K1's ScopeMap
+match is the objective backstop for this, but a human-legible single subject
+line is still worth a sanity read.
 
 If a required check fails, return work to the owning role. Never commit a
 known-failing milestone merely to save progress.
