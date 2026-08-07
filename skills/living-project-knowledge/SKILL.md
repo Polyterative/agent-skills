@@ -76,6 +76,7 @@ Update documentation at these boundaries:
 ## Editing rules
 
 - Document current truth, not a transcript of agent activity.
+- Write agent-facing documentation per `controlled-language-authoring` (W1–W16).
 - Write durable decisions as **distilled, executable guidance**: state the
   rule, its boundary, and the concrete pattern to follow, so a cheaper
   or smaller model can later act on it without re-deriving the reasoning.

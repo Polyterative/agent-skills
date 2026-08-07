@@ -230,6 +230,9 @@ includes:
   prose plus one evidence block. Follow-ups to warm agents send only the
   delta since `last_commit_seen`, never a re-brief; "same for Y" is allowed
   only when the antecedent is named and involved no judgment call.
+- **Wording.** Write kickoffs and skill edits per `controlled-language-authoring`
+  (W1–W16): imperative, one instruction per sentence, one term per concept,
+  no hedging, no double negatives.
 
 Use parallel work only for disjoint ownership. If work has a dependency, run the
 upstream contract or research first, then give downstream agents the confirmed
