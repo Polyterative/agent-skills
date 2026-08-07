@@ -439,6 +439,11 @@ Reconcile current work, backlog, decisions, product behavior, architecture,
 quality evidence, known limitations, and follow-up opportunities. Documentation
 must describe current truth, not merely narrate the implementation.
 
+Out-of-scope documentation problems go to the `DocDebt` ledger, not into this
+stage. When a trigger in `living-project-knowledge` §Consolidation pass fires
+(ledger ≥ 5, ~3 milestones since last consolidation, or run end), schedule the
+consolidation pass as its own `docs:` chunk.
+
 ### 10. COMMIT
 
 Invoke `validated-milestone-commit`.

@@ -84,6 +84,10 @@ Update documentation at these boundaries:
 - Replace stale current-state text instead of endlessly appending status notes.
 - Append only genuinely durable decisions, evidence, and completed outcomes.
 - Reconcile contradictions across docs in the same chunk.
+- When you notice a documentation problem **outside** the current chunk's scope
+  (duplication, stale section, missing cross-link, contradiction between docs,
+  oversized file), do not fix it now: append one line to a `DocDebt` ledger in
+  session state (`file | problem | suggested action`).
 - Keep docs concise and link to deeper material.
 - Skip a stage update when the stage produced no durable change to record. An
   empty update is churn, not truth.
@@ -96,6 +100,30 @@ Update documentation at these boundaries:
 - Do not paste entire `WorkflowManifest`, `LoopCheckpoint`, or `LoopRunRecord`
   documents into project documentation unless the repository explicitly uses an
   execution ledger.
+
+## Consolidation pass
+
+Incremental stage updates accumulate drift; a consolidation pass is the
+garbage collector. Run it only when triggered, not every loop:
+
+- `DocDebt` ledger has ≥ 5 entries, **or**
+- ~3 milestone commits have landed since the last consolidation, **or**
+- the run is ending (alongside harvest-and-dismiss).
+
+One agent (Sonnet-tier low; reuse a warm one when available), documentation
+files only. Consume the `DocDebt` ledger plus docs touched this run, then:
+
+- merge duplicated or overlapping sections into one canonical location;
+- delete superseded status and stale current-state text;
+- add cross-links instead of restating content;
+- align terminology across docs;
+- **split oversized files**: if a documentation file exceeds ~400 lines,
+  split it by topic into linked files and leave a short index in place.
+
+Budget rules: never restructure the documentation system from scratch, never
+touch code. A structural problem too big for this pass goes to the backlog.
+Output is a standalone `docs:` commit (see below). Clear consumed ledger
+entries.
 
 ## Commit relationship
 
