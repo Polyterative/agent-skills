@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="254" viewBox="0 0 660 254" font-family="Helvetica, Arial, sans-serif">
+<rect width="660" height="254" fill="#ffffff"/>
+
+<text x="330.0" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#1a1a1a">Efficiency: score per credit spent</text>
+<text x="330.0" y="40" text-anchor="middle" font-size="12" fill="#666">(sum of grade.sh scores) / (sum of AI credits) across all runs — higher means more score earned</text>
+<text x="330.0" y="56" text-anchor="middle" font-size="12" fill="#666">per credit</text>
+<line x1="190.0" y1="70" x2="190.0" y2="190" stroke="#f0f0f0"/>
+<text x="190.0" y="206" text-anchor="middle" font-size="10" fill="#999">0</text>
+<line x1="270.0" y1="70" x2="270.0" y2="190" stroke="#f0f0f0"/>
+<text x="270.0" y="206" text-anchor="middle" font-size="10" fill="#999">16</text>
+<line x1="350.0" y1="70" x2="350.0" y2="190" stroke="#f0f0f0"/>
+<text x="350.0" y="206" text-anchor="middle" font-size="10" fill="#999">32</text>
+<line x1="430.0" y1="70" x2="430.0" y2="190" stroke="#f0f0f0"/>
+<text x="430.0" y="206" text-anchor="middle" font-size="10" fill="#999">48</text>
+<line x1="510.0" y1="70" x2="510.0" y2="190" stroke="#f0f0f0"/>
+<text x="510.0" y="206" text-anchor="middle" font-size="10" fill="#999">63</text>
+<line x1="590.0" y1="70" x2="590.0" y2="190" stroke="#f0f0f0"/>
+<text x="590.0" y="206" text-anchor="middle" font-size="10" fill="#999">79</text>
+<text x="180" y="96.0" text-anchor="end" font-size="13" fill="#333">gpt-5.6-luna</text>
+<rect x="190" y="78" width="347.8" height="26" rx="4" fill="#2e7d32"/>
+<text x="545.8260869565217" y="96.0" font-size="13" font-weight="bold" fill="#1a1a1a">69.0</text>
+<text x="180" y="136.0" text-anchor="end" font-size="13" fill="#333">claude-haiku-4.5</text>
+<rect x="190" y="118" width="165.1" height="26" rx="4" fill="#5b6ee1"/>
+<text x="363.05780758460656" y="136.0" font-size="13" font-weight="bold" fill="#1a1a1a">32.8</text>
+<text x="180" y="176.0" text-anchor="end" font-size="13" fill="#333">claude-sonnet-5</text>
+<rect x="190" y="158" width="19.1" height="26" rx="4" fill="#c1440e"/>
+<text x="217.0664826002822" y="176.0" font-size="13" font-weight="bold" fill="#1a1a1a">3.8</text>
+<line x1="190" y1="68" x2="190" y2="190" stroke="#ccc"/>
+<text x="390.0" y="230" text-anchor="middle" font-size="11" fill="#666">score points per 1 AI credit spent</text>
+</svg>

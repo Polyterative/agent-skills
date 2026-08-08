@@ -31,7 +31,33 @@ bench/run.sh --task tsp-heuristic --timeout 900 --max-credits 60
 
 # summary table
 bench/report.sh
+
+# regenerate the charts below from results/runs.jsonl (pure stdlib, no deps)
+python3 bench/make_charts.py
 ```
+
+## Charts
+
+Generated from every valid run recorded in `results/runs.jsonl` (all tasks, all skill-set
+commits so far). Regenerate after any new run with `python3 bench/make_charts.py` — it's
+pure-stdlib SVG, no plotting libraries required. Hover a point in the scatter (rendered SVG,
+e.g. on GitHub) to see the task/score/credits in a tooltip.
+
+**Score vs. cost — the single-graph comparison across models:**
+
+![score vs credits](results/charts/score_vs_credits.svg)
+
+**Average score by model (all recorded runs):**
+
+![avg score by model](results/charts/avg_score_by_model.svg)
+
+**Efficiency — score delivered per credit spent:**
+
+![score per credit by model](results/charts/score_per_credit_by_model.svg)
+
+**Total credits spent across all recorded runs:**
+
+![total credits by model](results/charts/total_credits_by_model.svg)
 
 ## Containment
 
