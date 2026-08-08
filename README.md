@@ -156,38 +156,73 @@ Read the diagram top to bottom: the discovery swarm and workflow compiler run on
 
 ## Components
 
+Model tier legend: 🟠 coordinator-held · 🟣 judgment/Sonnet-class · 🔵 coding/Sol-class · 🟢 fixed cheap tier · ⚪ inline, no dedicated model. Full routing table in Architecture.
+
 ### Coordinator
 
-- `autonomous-development-loop` runs the end-to-end loop from a single area of interest. It sequences discovery, design, technical direction, implementation, documentation, testing, QA, and a test-gated commit.
+- `autonomous-development-loop`
+  - Runs the end-to-end loop from a single area of interest.
+  - Sequences discovery, design, technical direction, implementation, documentation, testing, QA, and a test-gated commit.
+  - Model: 🟠 coordinator, once per run.
 
 ### Workflow compiler
 
-- `adaptive-workflow-compiler` classifies requested work as low, medium, or high effort. It compiles a task-specific workflow from reusable stages: discovery, story, journey, flow, design, architecture, implementation, QA, documentation, commit.
+- `adaptive-workflow-compiler`
+  - Classifies requested work as low, medium, or high effort.
+  - Compiles a task-specific workflow from reusable stages: discovery, story, journey, flow, design, architecture, implementation, QA, documentation, commit.
+  - Model: 🟠 coordinator, medium.
 
 ### Delivery
 
-- `autonomous-delivery-lead` implements a vertical slice. It coordinates bounded coding agents, keeps docs in sync, validates incrementally, and prepares milestone commits.
+- `autonomous-delivery-lead`
+  - Implements a vertical slice.
+  - Coordinates bounded coding agents, keeps docs in sync, validates incrementally, prepares milestone commits.
+  - Model: 🔵 Sol, high.
 
 ### Role skills
 
-- `autonomous-product-lead` — defines needs, opportunities, stories, acceptance criteria, and backlog.
-- `autonomous-product-designer` — defines journeys, flows, information architecture, accessibility, visual hierarchy, and state design.
-- `autonomous-technical-lead` — defines architecture, refactoring, migration, testability, security, and performance direction.
-- `autonomous-quality-lead` — reviews strategy readiness and runs risk-based QA: unit, integration, snapshot, screenshot, accessibility, runtime, performance, regression.
-- `living-project-knowledge` — keeps product, design, architecture, backlog, decisions, QA, and performance docs synchronized with each stage.
+- `autonomous-product-lead`
+  - Defines needs, opportunities, stories, acceptance criteria, and backlog.
+  - Model: 🟣 Sonnet, med/high.
+- `autonomous-product-designer`
+  - Defines journeys, flows, information architecture, accessibility, visual hierarchy, and state design.
+  - Model: 🟣 Sonnet, med/high.
+- `autonomous-technical-lead`
+  - Defines architecture, refactoring, migration, testability, security, and performance direction.
+  - Model: 🔵 Sol, high/max.
+- `autonomous-quality-lead`
+  - Reviews strategy readiness and runs risk-based QA: unit, integration, snapshot, screenshot, accessibility, runtime, performance, regression.
+  - Model: 🔵 Sol, high.
+- `living-project-knowledge`
+  - Keeps product, design, architecture, backlog, decisions, QA, and performance docs synchronized with each stage.
+  - Model: 🟢 cheap tier, low.
 
 ### Swarms
 
-- `autonomous-discovery-swarm` — runs up to 10 parallel read-only research sessions. Each session explores the repository from a distinct angle before planning starts.
-- `autonomous-micro-sweep` — runs up to 10 parallel bug-hunt sessions. Each session commits one small fix, or returns a proposed patch, then a consolidated review pass runs. This skill also runs in performance mode as a loop stage.
+- `autonomous-discovery-swarm`
+  - Runs up to 10 parallel read-only research sessions, each exploring the repository from a distinct angle before planning starts.
+  - Model: 🟢 `gpt-5.6-luna`, low/med, fixed.
+- `autonomous-micro-sweep`
+  - Runs up to 10 parallel bug-hunt sessions; each commits one small fix, or returns a proposed patch, then a consolidated review pass runs. Also runs in performance mode as a loop stage.
+  - Model: 🟢 `gpt-5.6-luna`, med, fixed.
 
 ### Support skills
 
-- `lean-orchestrate` — coordinates multi-step or multi-repo work. It minimizes new worktrees and branches, and reuses open sessions.
-- `model-aware-orchestration` — selects models and effort levels for sub-agents. It defines the context-preserving delegation policy.
-- `controlled-language-authoring` — defines the writing rules for agent-facing instructions. Role skills and the coordinator use it to keep prompts and kickoff messages unambiguous across model tiers.
-- `readme-abstraction-ladder` — an optional, separately callable skill that writes or restructures a README as an abstraction ladder: strictly increasing detail from a plain-English tagline through usage examples, concept, problems solved, components, and architecture. Not part of the loop; invoke it directly when writing project documentation.
-- `validated-milestone-commit` — commits a completed chunk only after tests, QA, docs, and runtime or visual checks pass. It produces precise conventional commit messages.
+- `lean-orchestrate`
+  - Coordinates multi-step or multi-repo work; minimizes new worktrees and branches; reuses open sessions.
+  - Model: ⚪ inline, none.
+- `model-aware-orchestration`
+  - Selects models and effort levels for sub-agents; defines the context-preserving delegation policy.
+  - Model: ⚪ inline, none.
+- `controlled-language-authoring`
+  - Defines the writing rules for agent-facing instructions, so prompts and kickoff messages stay unambiguous across model tiers.
+  - Model: ⚪ inline, none.
+- `readme-abstraction-ladder`
+  - Optional, separately callable. Writes or restructures a README as an abstraction ladder: strictly increasing detail from a plain-English tagline through usage examples, concept, problems solved, components, and architecture. Not part of the loop.
+  - Model: ⚪ inline, none.
+- `validated-milestone-commit`
+  - Commits a completed chunk only after tests, QA, docs, and runtime or visual checks pass; produces precise conventional commit messages.
+  - Model: 🟢 cheap tier.
 
 ## Install
 
