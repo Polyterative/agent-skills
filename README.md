@@ -24,21 +24,27 @@ This repository provides a multi-agent development-loop skill system. The system
 
 ## Example triggers
 
-The human message that starts a run can be broad, scoped, or feature-shaped. The workflow compiler classifies effort from whatever comes in — it does not require a fixed prompt format. Three real trigger patterns, generalized to remove project names:
+The human message that starts a run can be broad, scoped, or feature-shaped. The workflow compiler classifies effort from whatever comes in — it does not require a fixed prompt format. Four real trigger patterns, generalized to remove project names:
 
-1. **Open-ended, unattended.** No area of interest is named. The discovery swarm finds it.
+1. **Vague, subjective goal, no spec.** The human states a feeling about quality, not a requirement. There is no bug, no feature name, no acceptance criteria to hand off.
 
-   > "Find useful work to do in this repo and autonomously run full loop to execute it. Stop asking for my password, I am away from keyboard. Ask me only once in the future."
+   > "I want the app to feel more high quality. Full development loop."
+
+   There is nothing here to implement directly. Discovery reads the codebase to find where quality actually falls short, the product role turns that feeling into concrete opportunities and acceptance criteria, and the rest of the chain builds and validates against those — turning a subjective impression into a shippable, QA-gated change.
+
+2. **Open-ended, unattended.** No area of interest is named. The discovery swarm finds it.
+
+   > "Find useful work to do in this repo and autonomously run full loop to execute it."
 
    This routes straight through discovery, lets the compiler pick the smallest useful objective from repository evidence, and runs the full role chain without a human checkpoint until the final commit.
 
-2. **Scoped bug-hunt, explicit skill and effort.** The human names the skill, the effort tier, the bug class (not just one repro), and the guardrails.
+3. **Scoped bug-hunt, explicit skill and effort.** The human names the skill, the effort tier, the bug class (not just one repro), and the guardrails.
 
    > "Run the autonomous-development-loop skill at HIGH effort for the following area of interest: [feature] reliability bugs. Reported bug (starting point, not the only scope): [specific repro]. Goal: find and fix ALL bugs of this class, not just the one reported. This session IS the dedicated worktree for this bug-hunt — do not touch unrelated code unless a fix genuinely requires it. Commit at meaningful milestones once tests pass. Do not push unless explicitly asked."
 
    This skips discovery (root cause is already partly known), pins the effort tier, and constrains delivery to a single-writer scope explicitly.
 
-3. **Feature request, no skill named.** The human describes a product change in plain language and asks for the full loop; the compiler infers scope and effort from the request itself.
+4. **Feature request, no skill named.** The human describes a product change in plain language and asks for the full loop; the compiler infers scope and effort from the request itself.
 
    > "We need a plug-in system for icons instead of images. I want this to work entirely on vectors — text, primitives, and imported packs. This probably needs a wider redesign, both for import and later use. Full development loop please, high effort."
 
