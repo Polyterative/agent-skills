@@ -29,13 +29,18 @@ VARIANT="skills-on"
 MODEL="${BENCH_MODEL:-claude-sonnet-4.6}"
 ONLY_TASK=""
 LABEL=""
+MAX_CREDITS="${BENCH_MAX_CREDITS:-30}"   # hard AI-credit cap per run (CLI minimum: 30)
+RUN_TIMEOUT="${BENCH_TIMEOUT:-600}"      # hard wall-clock cap per run (seconds)
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --variant) VARIANT="$2"; shift 2 ;;
     --model)   MODEL="$2";   shift 2 ;;
     --task)    ONLY_TASK="$2"; shift 2 ;;
+    --tasks-dir) TASKS_DIR="$BENCH_DIR/$2"; shift 2 ;;
     --label)   LABEL="$2";   shift 2 ;;
+    --max-credits) MAX_CREDITS="$2"; shift 2 ;;
+    --timeout) RUN_TIMEOUT="$2"; shift 2 ;;
     -h|--help) grep '^#' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "unknown arg: $1" >&2; exit 1 ;;
   esac
@@ -43,6 +48,7 @@ done
 
 command -v sqlite3 >/dev/null || { echo "sqlite3 required" >&2; exit 1; }
 command -v copilot >/dev/null || { echo "copilot CLI required" >&2; exit 1; }
+command -v timeout >/dev/null || { echo "GNU timeout required (brew install coreutils)" >&2; exit 1; }
 
 SKILLSET_COMMIT="$(git -C "$REPO_DIR" rev-parse --short HEAD)"
 SKILLSET_DIRTY="$(git -C "$REPO_DIR" status --porcelain | grep -q . && echo true || echo false)"
@@ -59,6 +65,16 @@ else
 fi
 
 mkdir -p "$BENCH_DIR/results"
+
+# Disable every MCP server configured in the active COPILOT_HOME: bench agents
+# must not see notion/supabase/etc. tool surfaces.
+MCP_DISABLE_ARGS=()
+MCP_CFG="${COPILOT_HOME:-$HOME/.copilot}/mcp-config.json"
+if [[ -f "$MCP_CFG" ]]; then
+  while IFS= read -r srv; do
+    MCP_DISABLE_ARGS+=(--disable-mcp-server "$srv")
+  done < <(jq -r '.mcpServers // {} | keys[]' "$MCP_CFG" 2>/dev/null)
+fi
 
 run_task() {
   local task="$1"
@@ -79,8 +95,17 @@ run_task() {
   local start end status
   start=$(date +%s)
   set +e
-  ( cd "$work" && copilot -p "$(cat "$task_dir/prompt.md")" \
-      --allow-all-tools --allow-all-paths \
+  # Containment: MCP servers disabled entirely, web denied, paths limited to
+  # the temp workdir, hard credit + wall-clock caps, no remote control/export.
+  # Note: do NOT use --available-tools with guessed names — tool names vary and
+  # a wrong list silently leaves the agent read-only (observed: solver scored 0
+  # because the model had no write tool). shell+write allowances suppress prompts.
+  ( cd "$work" && exec timeout --kill-after=15 "$RUN_TIMEOUT" \
+      copilot -p "$(cat "$task_dir/prompt.md")" \
+      --allow-tool 'shell' --allow-tool 'write' \
+      --disable-builtin-mcps "${MCP_DISABLE_ARGS[@]}" --deny-url='*' \
+      --no-remote-export \
+      --max-ai-credits "$MAX_CREDITS" \
       --session-id "$sid" --model "$MODEL" \
       --log-level none --no-auto-update -s \
       > "$work/.bench-output.txt" 2>&1 )

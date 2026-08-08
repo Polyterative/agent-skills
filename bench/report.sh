@@ -5,6 +5,7 @@ FILE="$(dirname "${BASH_SOURCE[0]}")/results/runs.jsonl"
 [[ -s "$FILE" ]] || { echo "no results yet — run bench/run.sh first"; exit 0; }
 
 jq -rs '
+  map(select(.invalid | not)) |
   group_by(.skillset_commit + .variant + .model) | map({
     commit: .[0].skillset_commit, variant: .[0].variant, model: .[0].model,
     runs: length,
@@ -22,6 +23,7 @@ jq -rs '
 echo
 echo "Per-task latest:"
 jq -rs '
+  map(select(.invalid | not)) |
   group_by(.task + .variant) | map(max_by(.ts))
   | (["task","variant","score","tok_in","tok_out","credits","wall_s"],
      (.[] | [.task, .variant, .score, .input_tokens, .output_tokens, (.credits*100|round/100), .wall_seconds]))

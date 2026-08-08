@@ -18,18 +18,34 @@ versions over time, and A/B skills-on vs skills-off.
 ## Usage
 
 ```bash
-# full suite, skills-on (your real ~/.copilot with this repo's skills symlinked)
-bench/run.sh --model claude-sonnet-4.6
+# full hard suite, skills-on (your real ~/.copilot with this repo's skills symlinked)
+bench/run.sh --model claude-sonnet-5
 
 # baseline without any skills (isolated COPILOT_HOME, auth via `gh auth token`)
-bench/run.sh --model claude-sonnet-4.6 --variant skills-off
+bench/run.sh --model claude-sonnet-5 --variant skills-off
 
-# single task, cheap model, custom label
-bench/run.sh --task fix-bug --model claude-haiku-4.5 --label smoke
+# single task / smoke tier / custom caps
+bench/run.sh --task quirkvm --model gpt-5.6-luna
+bench/run.sh --tasks-dir smoke --task fix-bug --model claude-haiku-4.5
+bench/run.sh --task tsp-heuristic --timeout 900 --max-credits 60
 
 # summary table
 bench/report.sh
 ```
+
+## Containment
+
+Benchmark agents run headless but NOT uncontrolled. Each run is sandboxed by `run.sh`:
+
+- tool allowlist only (`shell`, file read/write/edit tools) — no MCP servers
+  (built-ins disabled, every server in `mcp-config.json` explicitly disabled), no web
+  (`--deny-url='*'`), no remote export
+- file access confined to the per-run temp workdir (no `--allow-all-paths`)
+- hard AI-credit cap per run (`--max-ai-credits`, default 30 — the CLI minimum; raise
+  per-task with `--max-credits`)
+- hard wall-clock cap via GNU `timeout` (default 600 s, `--timeout` to override), which
+  kills the whole process tree
+- runs execute sequentially in the foreground of the invoking shell — no detached loops
 
 ## Metrics per run
 
@@ -45,6 +61,23 @@ bench/report.sh
 `report.sh` also derives **score per credit** — the headline efficiency number.
 
 ## Tasks
+
+The main suite (`tasks/`) is deliberately hard: calibrated so current frontier models land
+near ~50, leaving headroom to measure future improvement. Scores are weighted fractions of
+hidden ground-truth cases (generated from reference implementations: node-semver, croniter,
+difflib), with edge cases weighted heaviest.
+
+| task | axis | ground truth | hard parts |
+|---|---|---|---|
+| `semver-ranges` | spec-compliance implementation | node-semver | prerelease exclusion rule, partial hyphen ranges, build metadata. Score normalized above chance (constant answers → 0) |
+| `cron-next` | algorithmic edge cases | croniter | DOM/DOW union rule, leap years, impossible dates, name ranges |
+| `unified-diff` | exact-output algorithm | difflib (banned in solution) | hunk merging, `@@ -4 +4 @@` count omission, zero-context, empty files |
+| `quirkvm` | precise spec-following on an invented machine | custom reference interpreter (60 hidden random programs) | anti-intuitive rules: bottom-discard stack cap, reversed REP blocks, error-flag PRINT semantics, mixed wrap/saturate arithmetic |
+| `mystery-transform` | inductive reasoning from examples | secret 6-rule composition, 50 held-out cases | rule interactions and application order; memorizing train.json scores 0 |
+| `tsp-heuristic` | open-ended optimization under time budgets | NN+2-opt(neighbor lists)+Or-opt reference tours | continuous score (frac^4 of NN→ref gap closed); naive 2-opt ≈ 56, well-pruned 2-opt ≈ 67, 100 needs beating the reference in tight budgets |
+
+The original easy tasks live in `smoke/` (ceiling reached — every model scores 100; useful
+as harness smoke tests): run them with `bench/run.sh --tasks-dir smoke`.
 
 | task | axis | key checks |
 |---|---|---|
