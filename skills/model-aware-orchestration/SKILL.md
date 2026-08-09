@@ -81,22 +81,60 @@ Select the model according to the required quality, acceptable latency, and
 dominant kind of reasoning. Do not use one model by habit, and do not increase
 model capability because tokens are free.
 
+### Cost tier
+
+Order tiers cheapest to priciest: GPT-5.6 Terra/Luna, then Claude Sonnet 5,
+then Claude Opus 4.8 Fast, then Claude Fable 5 as the priciest model
+available. Default to Claude Sonnet 5 for any role or stage without a
+narrower override below. Reserve Claude Fable 5 for the hardest challenges
+only: cases where Sonnet 5 already reported low confidence, produced
+conflicting output, or the task demonstrably needs breadth of exploration
+Sonnet 5 cannot supply. Do not select Fable as a stage's starting default.
+
+### Mandatory explicit selection
+
+Set the `model` parameter explicitly on every sub-agent or child-session call.
+Do not omit `model` and rely on the environment's default model. The default
+model is outside this routing table and silently bypasses it. Treat a
+delegation call with no `model` value as a policy violation, not an
+acceptable shortcut. Record the chosen model and effort in the kickoff
+message and in the AgentRegistry entry for that agent.
+
+### Routing applies recursively
+
+This routing table binds every agent that delegates, not only the top-level
+coordinator. When a role sub-agent (design, direct, delivery, quality, or
+review) spawns its own narrower sub-check — a mechanical check, a narrow test
+run, a status lookup, or a small inventory task — route that sub-check by its
+own profile in the tables below. Do not let it inherit the parent role's
+model by default. A delivery-lead running on Claude Sonnet 5 that spawns a
+"does this compile" check MUST route that check to GPT-5.6 Terra or Luna,
+per the mechanical-work row in Specialist overrides.
+
 ### Operating profiles
 
 | Need | Model and effort | Guidance |
 | --- | --- | --- |
 | Good quality, very fast, low waste | GPT-5.6 Terra, medium for fully specified mechanical work or high for normal coding | Lowest default execution tier. Escalate after evidence of cross-file complexity, uncertain behavior, or failed validation rather than preemptively. |
-| Very good quality, efficient, latency not critical | GPT-5.6 Sol, high | Default for sustained implementation, debugging, tests, and repository-aware changes. This is the normal agentic-coding route. |
-| Maximum coding quality, long wait acceptable | GPT-5.6 Sol, max | Use for difficult architecture, deep root-cause analysis, risky migrations, cross-cutting refactors, or tasks where a shallow first attempt would cause substantial rework. |
-| High quality immediately, premium token use acceptable | Claude Opus 4.8 Fast, xhigh | Use for urgent difficult reviews, time-sensitive debugging, or a strong rapid second opinion. Prefer Sol max instead when absolute coding quality matters more than wall-clock latency. |
+| Very good quality, efficient, latency not critical | Claude Sonnet 5, high | Default for sustained implementation, debugging, tests, and repository-aware changes. This is the normal agentic-coding route. |
+| Maximum coding quality, long wait acceptable | Claude Sonnet 5, max | Use for difficult architecture, deep root-cause analysis, risky migrations, cross-cutting refactors, or tasks where a shallow first attempt would cause substantial rework. |
+| High quality immediately, premium token use acceptable | Claude Opus 4.8 Fast, xhigh | Use for urgent difficult reviews, time-sensitive debugging, or a strong rapid second opinion. Prefer Claude Sonnet 5 at max instead when absolute coding quality matters more than wall-clock latency. |
+
+Current preference: route sustained implementation and maximum-quality coding
+work to Claude Sonnet 5, not GPT-5.6 Sol. This reflects a measured efficiency
+preference, not a permanent ban. Revisit it if evidence changes.
 
 ### Specialist overrides
 
 | Work | Preferred model and effort | Guidance |
 | --- | --- | --- |
 | UI/UX, interaction design, product wording, visual hierarchy, and design-system judgment | Claude Sonnet 5, medium or high | Ask for concrete implementation and acceptance criteria, not a vague aesthetic pass. Use high when interaction behavior or product tradeoffs are unresolved. |
-| Divergent ideation, several product/design directions, naming, creative exploration, or unusually long autonomous discovery | Claude Fable 5, high or xhigh | Use when breadth, originality, and proactive exploration matter. Do not make it the default for routine implementation or bug fixing. |
+| Divergent ideation, several product/design directions, naming, creative exploration, or unusually long autonomous discovery | Claude Sonnet 5, high by default; escalate to Claude Fable 5, high or xhigh, only on evidence Sonnet 5's breadth is insufficient | Fable is the priciest model available. Reserve it for the hardest ideation challenges, not routine divergent work. Never default to it for routine implementation or bug fixing. |
 | Simple lookup, status check, narrow test, or mechanical command | GPT-5.6 Terra, medium, or a faster lightweight model | Do not give it ownership of design decisions or nontrivial edits. |
+| Risk-based QA (`autonomous-quality-lead`): acceptance-plan reconciliation, test execution, risk classification, PASS/REPAIR/REWORK verdicts | GPT-5.6 Luna, high | Read-only and checklist-driven. Escalate to Claude Sonnet 5 on the standard escalation-ladder signals (failed validation, low confidence, two unproductive turns, wider scope than briefed). |
+| Independent code review (stage 7 REVIEW): correctness, regressions, concurrency, error handling on a bounded diff | GPT-5.6 Luna, high | Read-only, no edits. Escalate to Claude Sonnet 5 on the same escalation-ladder signals, and always for a security-sensitive finding. |
+| STRATEGY_READINESS_GATE (`autonomous-quality-lead`, pre-implementation mode): READY/REVISE/BLOCKED verdict on a `PreparationPacket` | Claude Sonnet 5, medium by default | Brief but high-leverage: a wrong verdict wastes a full implementation cycle. Escalate to Claude Fable 5, high, only when Sonnet 5 reports low confidence or finds conflicting constraints across artifacts — treat that as the hardest-challenge case, not the default. |
+| DOCUMENT stage (`living-project-knowledge`): reconcile current work, backlog, decisions, product/architecture truth, quality evidence, `DocDebt` | GPT-5.6 Luna, medium | Consolidation and drafting against existing artifacts, matching Luna's read-only/drafting strength. Escalate to Claude Sonnet 5 on the standard escalation-ladder signals (failed validation, low confidence, two unproductive turns, wider scope than briefed). |
 
 ### Reasoning and token policy
 
@@ -126,6 +164,12 @@ task with several models.
 (`autonomous-discovery-swarm`, `autonomous-micro-sweep`) never escalate —
 their agents demote unresolved items to findings. The ladder below applies
 only to routed, non-swarm delegation.
+
+**LOW-effort default.** Treat a stage the manifest classifies LOW effort, or a
+target already scoped to a single named file or function, as uncertain
+difficulty by default. Start that stage at Luna/Terra and escalate on the
+signals below. A matching specialist override (design/UI judgment, divergent
+ideation) still takes precedence over this default when it applies.
 
 Treat capability tiers as a cascade with early exit. For delegable work whose
 difficulty is uncertain, start at the cheapest tier that could plausibly
@@ -294,8 +338,8 @@ Model note for writing sessions: fast hunt-tier models (e.g. Luna) are
 reliable for read-only research and content drafting, but have proven
 unreliable at multi-step procedural git compliance (branch discipline,
 worktree cleanup, exact command sequences). Route any delegated task whose
-success depends on following git/process constraints precisely to a
-Sonnet-class model at low effort or above.
+success depends on following git/process constraints precisely to Claude
+Sonnet 5 at low effort or above.
 
 The coordinator owns integration: compare results against the original goal,
 resolve conflicts, ensure interfaces agree, and verify the combined outcome.

@@ -79,12 +79,12 @@ The invocation must contain an area of interest. Treat that as sufficient input.
    design, architecture, testing, workflow, and roadmap documentation.
 2. Inspect the current branch, working tree, recent history, active work, and
    existing sessions before proposing new work.
-3. When the area of interest is broad or unfamiliar, invoke
-   `autonomous-discovery-swarm` before classification. It spawns up to 10
-   parallel, read-only gpt-5.6-luna research sessions across distinct angles
-   of the area, then consolidates their findings into a `DiscoveryDossier`.
-   Skip it only for a target the coordinator already understands precisely
-   (a single named file/function). This stage never edits files or commits.
+3. Invoke `autonomous-discovery-swarm` before classification by default. It
+   spawns up to 10 parallel, read-only gpt-5.6-luna research sessions across
+   distinct angles of the area, then consolidates their findings into a
+   `DiscoveryDossier`. Skip it only when the coordinator's quick triage
+   already names the entire target as a single file or function. This stage
+   never edits files or commits.
 4. Invoke `adaptive-workflow-compiler` before any role skill or production-code
    edit. Classify the request as LOW, MEDIUM,
    or HIGH effort and produce the `WorkflowManifest`, artifact graph, gates,
@@ -117,7 +117,8 @@ QUICK_TRIAGE (coordinator, one cheap judgment)
      LIKELY_LOW_VALUE -> BACKLOG_RECOMMENDATION (stop before spending)
      GENUINE_BREAKAGE -> EXPEDITE_LANE
      PROCEED          -> DISCOVERY_SWARM
-DISCOVERY_SWARM (optional, read-only, gpt-5.6-luna)
+DISCOVERY_SWARM (default-on, read-only, gpt-5.6-luna; skip only for a target
+                  already named to a single file or function)
   -> UNDERSTAND
   -> CLASSIFY_AND_COMPILE
        BEHAVIOR_CONTRACT_PATH -> DIRECT (explicit bypass of DISCOVER/DESIGN,
@@ -128,7 +129,8 @@ DISCOVERY_SWARM (optional, read-only, gpt-5.6-luna)
        BLOCKED -> PARK (record unblock condition) + CONTINUE_INDEPENDENT_WORK
        READY   -> IMPLEMENT_SLICES
   -> INTEGRATE_AND_REVIEW
-  -> PERF_SWEEP (optional, manifest-selected)
+  -> PERF_SWEEP (default-on, manifest-recorded; skip only for a trivial or
+                 non-performance-relevant slice)
   -> QUALITY_GATE
        PASS    -> DOCUMENT -> COMMIT -> OBSERVE_AND_PRIORITIZE
        REPAIR  -> RETURN_TO_OWNING_STAGE
@@ -391,13 +393,14 @@ three rounds. Record remaining non-blocking improvements and stop.
 The three review rounds and the quality lead's three repair rounds are separate
 budgets. If their combined total reaches five, stop and mark the slice blocked.
 
-### 7B. PERF_SWEEP (optional)
+### 7B. PERF_SWEEP (default-on)
 
-After review converges and before QA, if the manifest selects it, invoke
-`autonomous-micro-sweep` in **performance mode**, scoped strictly to the
-surfaces the slice touched (plus their direct hot paths). Select this stage
-when the slice touched rendering, loops over data, I/O, startup, or other
-plausibly hot code; omit it for trivial or non-performance-relevant slices.
+After review converges and before QA, invoke `autonomous-micro-sweep` in
+**performance mode**, scoped strictly to the surfaces the slice touched (plus
+their direct hot paths). Skip this stage only for a trivial or
+non-performance-relevant slice (e.g., copy-only, config-only, or a slice with
+no rendering, data loop, I/O, or startup path). Record the skip reason in the
+manifest.
 
 - The swarm hunts only safe, behavior-preserving micro-optimizations;
   anything needing measurement to justify or architectural change becomes a
@@ -431,7 +434,13 @@ reload the skill.
 
 ### 9. DOCUMENT
 
-Invoke `living-project-knowledge`.
+Invoke `living-project-knowledge` as a sub-agent, per `model-aware-orchestration`
+§Specialist overrides (GPT-5.6 Luna, medium; escalate on the standard
+escalation-ladder signals). Do not edit documentation or changelog files
+inline in the coordinator's own context — that repeats the inline-role-work
+failure `model-aware-orchestration` §Delegation mechanics forbids. A
+documentation edit with no prior `living-project-knowledge` sub-agent
+invocation in this stage is a policy violation, not a shortcut.
 
 Reconcile current work, backlog, decisions, product behavior, architecture,
 quality evidence, known limitations, and follow-up opportunities. Documentation
@@ -583,7 +592,11 @@ material equipment risk, production access, or an irreversible product choice:
 ## Agent and model policy
 
 Invoke `model-aware-orchestration` before delegating, including its mandatory
-delegation-mechanics section. Prefer retained context and few agents over large
+delegation-mechanics section. Do not issue any sub-agent or child-session call
+before that invocation completes in the current session. Set the `model`
+parameter explicitly on every such call, per `model-aware-orchestration`
+§Model routing. Treat a delegation call with no `model` value as a policy
+violation, not an acceptable default. Prefer retained context and few agents over large
 swarms, but every role stage and every swarm member still runs as a real
 sub-agent or child session — never as inline narration in the coordinator's
 own context. Concretely: use a sub-agent call (background mode by default, so

@@ -111,7 +111,7 @@ garbage collector. Run it only when triggered, not every loop:
 - ~3 milestone commits have landed since the last consolidation, **or**
 - the run is ending (alongside harvest-and-dismiss).
 
-One agent (Sonnet-tier low; reuse a warm one if available), documentation
+One agent (Claude Sonnet 5, low; reuse a warm one if available), documentation
 files only. Consume the `DocDebt` ledger plus docs touched this run, then:
 
 - merge duplicated or overlapping sections into one canonical location;

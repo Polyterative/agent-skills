@@ -306,10 +306,12 @@ expert paths. Record the coverage rationale in the manifest.
 7. Add prerequisite stages for unknowns, migrations, safety, or baseline
    evidence.
 8. Build the artifact dependency graph.
-9. Assign each stage to one accountable role, and record the
-   `execution_policy`: writer is `autonomous-delivery-lead`, coordinator may
-   not edit production code, `max_concurrent_writers`/`isolation`/
-   `parallel_scopes` follow the manifest's own field comments.
+9. Assign each stage to one accountable role and a `model`/`effort` pair from
+   `model-aware-orchestration` §Model routing. Do not leave a stage's model
+   field blank — an unset field is a manifest defect, not caller discretion.
+   Record the `execution_policy`: writer is `autonomous-delivery-lead`,
+   coordinator may not edit production code, `max_concurrent_writers`/
+   `isolation`/`parallel_scopes` follow the manifest's own field comments.
    `standing_services` declares the area-owning sessions for the run
    (minimum: the integrator that owns commits to main; add a docs keeper
    when the run includes consolidation passes). Single-writer
